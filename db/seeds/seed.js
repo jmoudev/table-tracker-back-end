@@ -1,10 +1,20 @@
 const { userData, foodData, tableData } = require('../data/index');
 
-exports.seed = async (knex) => {
-  await knex.migrate.rollback();
-  await knex.migrate.latest();
-
-  const userPromise = knex('users').insert(userData, '*');
-  const foodPromise = knex('food').insert(foodData, '*');
-  await Promise.all([userPromise, foodPromise]);
+exports.seed = (knex) => {
+  return knex.migrate
+  .rollback().then(() => {
+    return knex.migrate.latest();
+  })
+  .then(() => {
+    return knex("users").insert(userData)
+    .returning("*");
+  })
+  .then(() => {
+    return knex("tables").insert(tableData)
+    .returning("*"); 
+  })
+  .then(() => {
+    return knex("food_items").insert(foodData)
+    .returning("*"); 
+  })
 };
