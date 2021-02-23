@@ -17,15 +17,23 @@ describe('/api', () => {
   });
 
   describe('/api/orders', () => {
-    //error method not valid
     it('ERROR - status 405 - method not allowed', () => {});
 
     describe('GET all orders', () => {
-      xit('SUCCESS - status 200 - returns a new order', () => {});
+      xit('SUCCESS - status 200 - returns array of all orders', () => {});
+      xit('SUCCESS - status 200 - returns array of orders with is_active query filtering based on whether the table is currently active', () => {});
+      xit('ERROR - status 400 - bad request on is_active query', () => {});
     });
   });
 
   describe('/api/tables', () => {
+    describe('/api/tables', () => {
+      describe('GET all tables', () => {
+        xit('SUCCESS - status 200 - returns all tables', () => {});
+        xit('SUCCESS - status 200 - returns all active tables', () => {});
+      });
+    });
+
     describe('/api/tables/:table_id/orders', () => {
       describe('PATCH order by table_id', () => {
         xit('SUCCESS - status 200 - return specified order with updated food-items', () => {});
@@ -48,6 +56,3 @@ describe('/api', () => {
 
   describe('/api/users', () => {});
 });
-
-// get tables (in order of first in first served)
-// post tables - (extra)
