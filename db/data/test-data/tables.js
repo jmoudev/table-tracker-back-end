@@ -1,7 +1,7 @@
 module.exports = [
   {
     name: 'Table 1',
-    is_active: 'false'
+    is_active: 'true'
   },
   {
     name: 'Table 2',

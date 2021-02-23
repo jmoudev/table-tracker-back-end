@@ -36,13 +36,14 @@ describe('/api', () => {
   describe('/api/tables', () => {
     describe('/api/tables', () => {
       describe('GET all tables', () => {
-        it.only('SUCCESS - status 200 - returns all tables', () => {
+        it('SUCCESS - status 200 - returns all tables', () => {
           return request(app)
             .get('/api/tables')
             .expect(200)
             .then(({ body }) => {
-              body.tables.forEach(topic => {
-                expect(topic).toEqual(
+              expect(body.tables).toHaveLength(8);
+              body.tables.forEach(table => {
+                expect(table).toEqual(
                   expect.objectContaining({
                     table_id: expect.any(Number),
                     name: expect.any(String),
@@ -52,7 +53,24 @@ describe('/api', () => {
               });
             });
         });
-        xit('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {});
+        it('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {
+          // need to first patch table to be active then carry out get
+          return request(app)
+            .get('/api/tables?is_active=true')
+            .expect(200)
+            .then(({ body }) => {
+              // say that only one table patch carried out
+              expect(body.tables).toHaveLength(1);
+              body.tables.forEach(table => {
+                expect(table).toEqual(
+                  // also is active filter query set to true
+                  expect.objectContaining({
+                    is_active: true
+                  })
+                );
+              });
+            });
+        });
         xit('ERROR - status 400 - bad request on is_active query', () => {});
       });
     });
