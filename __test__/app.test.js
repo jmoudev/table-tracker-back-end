@@ -68,35 +68,34 @@ describe('/api', () => {
               });
             });
         });
-        it.only('ERROR - status 400 - bad request on is_active query', () => {
+        it('ERROR - status 400 - bad request on is_active query', () => {
           return request(app)
             .get('/api/tables?is_active=not-a-query')
             .expect(400)
             .then(({ body }) => {
-              body.msg.toEqual("Bad Request")
+              expect(body.msg).toEqual('Bad Request');
             });
-        });
         });
       });
     });
+  });
 
-    describe('/api/tables/:table_id/orders', () => {
-      describe('PATCH order by table_id', () => {
-        xit('SUCCESS - status 200 - return specified order with updated food-items', () => {});
-        xit('SUCCESS - status 200 - no information in request body does not update order', () => {});
-        xit('ERROR - status 404 - table does not exist', () => {});
-        xit('ERROR - status 404 - bad request on table_id', () => {});
-        xit('ERROR - status 404 - bad request body incorrect type', () => {});
-      });
+  describe('/api/tables/:table_id/orders', () => {
+    describe('PATCH order by table_id', () => {
+      xit('SUCCESS - status 200 - return specified order with updated food-items', () => {});
+      xit('SUCCESS - status 200 - no information in request body does not update order', () => {});
+      xit('ERROR - status 404 - table does not exist', () => {});
+      xit('ERROR - status 404 - bad request on table_id', () => {});
+      xit('ERROR - status 404 - bad request body incorrect type', () => {});
+    });
 
-      describe('POST order by table_id', () => {
-        xit('SUCCESS - status 201 - returns a new order', () => {});
-        xit('ERROR - status 404 - table does not exist', () => {});
-        xit('ERROR - status 400 - bad request on table_id', () => {});
-        xit('ERROR - status 400 - bad request body missing required field', () => {});
-        xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
-        xit('ERROR - status 400 - bad request food-item not valid', () => {});
-      });
+    describe('POST order by table_id', () => {
+      xit('SUCCESS - status 201 - returns a new order', () => {});
+      xit('ERROR - status 404 - table does not exist', () => {});
+      xit('ERROR - status 400 - bad request on table_id', () => {});
+      xit('ERROR - status 400 - bad request body missing required field', () => {});
+      xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
+      xit('ERROR - status 400 - bad request food-item not valid', () => {});
     });
   });
   // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
