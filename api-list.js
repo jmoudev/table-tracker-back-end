@@ -4,9 +4,19 @@ module.exports = {
       'serves up a json representation of all the available endpoints of the api'
   },
   'GET /api/orders': {
-    description: '',
-    queries: [],
-    exampleResponse: {}
+    description: 'serves up an array of all orders',
+    queries: null,
+    exampleResponse: {
+      orders: [
+        {
+          order_id: 1,
+          table_name: 'table 3',
+          food_items: ['lamb tacos', 'beef tacos', 'water'],
+          description: 'nut allergy',
+          is_ready: true
+        }
+      ]
+    }
   },
   'GET /api/tables': {
     description: '',
