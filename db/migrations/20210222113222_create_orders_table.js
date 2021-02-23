@@ -1,5 +1,4 @@
 exports.up = function (knex) {
-  console.log('creating orders table');
   return knex.schema.createTable('orders', (ordersTable) => {
     ordersTable.increments('order_id').primary();
     ordersTable.integer('table_id').references('tables.table_id').notNullable();
@@ -13,6 +12,5 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  console.log('dropping orders table');
   return knex.schema.dropTable('orders');
 };
