@@ -12,8 +12,13 @@ module.exports = {
           order_id: 1,
           table_name: 'table 3',
           food_items: ['lamb tacos', 'beef tacos', 'water'],
+          served_items: [],
           description: 'nut allergy',
-          is_ready: true
+          starters_ready: true,
+          mains_ready: true,
+          desserts_ready: true,
+          drinks_ready: true,
+          is_active: true
         }
       ]
     }
@@ -32,10 +37,29 @@ module.exports = {
     }
   },
   'PATCH /api/tables/:table_id/orders': {
-    description: '',
+    description: 'updates the requested table order ',
     queries: null,
-    exampleRequestBody: {},
-    exampleResponse: {}
+    exampleRequestBody: {
+      food_items: [],
+      starters_ready: true,
+      drinks_ready: true,
+      mains_ready: true,
+      desserts_ready: true
+    },
+    exampleResponse: {
+      order: {
+        order_id: 1,
+        table_name: 'table 3',
+        food_items: [],
+        served_items: ['lamb tacos', 'beef tacos', 'water'],
+        description: 'nut allergy',
+        starters_ready: true,
+        mains_ready: true,
+        desserts_ready: true,
+        drinks_ready: true,
+        is_active: true
+      }
+    }
   },
   'POST /tables/:table_id/orders': {
     description:
