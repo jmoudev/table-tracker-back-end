@@ -27,6 +27,8 @@ describe('/api', () => {
 
     describe('GET all orders', () => {
       xit('SUCCESS - status 200 - returns array of all orders', () => {});
+      // by table query
+      xit('SUCCESS - status 200 - returns array of all orders', () => {});
     });
   });
 
@@ -34,9 +36,47 @@ describe('/api', () => {
   describe('/api/tables', () => {
     describe('/api/tables', () => {
       describe('GET all tables', () => {
-        xit('SUCCESS - status 200 - returns all tables', () => {});
-        xit('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {});
-        xit('ERROR - status 400 - bad request on is_active query', () => {});
+        it('SUCCESS - status 200 - returns all tables', () => {
+          return request(app)
+            .get('/api/tables')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.tables).toHaveLength(8);
+              body.tables.forEach(table => {
+                expect(table).toEqual(
+                  expect.objectContaining({
+                    table_id: expect.any(Number),
+                    name: expect.any(String),
+                    is_active: expect.any(Boolean)
+                  })
+                );
+              });
+            });
+        });
+        it('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {
+          return request(app)
+            .get('/api/tables?is_active=true')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.tables).toHaveLength(1);
+              body.tables.forEach(table => {
+                expect(table).toEqual(
+                  expect.objectContaining({
+                    is_active: true
+                  })
+                );
+              });
+            });
+        });
+        it.only('ERROR - status 400 - bad request on is_active query', () => {
+          return request(app)
+            .get('/api/tables?is_active=not-a-query')
+            .expect(400)
+            .then(({ body }) => {
+              body.msg.toEqual("Bad Request")
+            });
+        });
+        });
       });
     });
 
