@@ -36,26 +36,42 @@ module.exports = {
       ]
     }
   },
-  'PATCH /api/tables/:table_id/orders': {
-    description: 'updates the requested table order ',
+  'PATCH /api/tables/:table_id': {
+    description:
+      'updates the requested table with the is_active object returning the updated table',
     queries: null,
     exampleRequestBody: {
-      food_items: [],
+      is_active: false
+    },
+    exampleResponse: {
+      table: {
+        table_id: 1,
+        table_name: 'table 1',
+        is_active: false
+      }
+    }
+  },
+
+  'PATCH /api/tables/:table_id/orders': {
+    description:
+      'updates the requested table order with additional food_items, course_ready, or is_active booleans',
+    queries: null,
+    exampleRequestBody: {
+      food_items: ['sticky toffee pudding'],
       starters_ready: true,
       drinks_ready: true,
-      mains_ready: true,
-      desserts_ready: true
+      mains_ready: true
     },
     exampleResponse: {
       order: {
         order_id: 1,
         table_name: 'table 3',
-        food_items: [],
+        food_items: ['sticky toffee pudding'],
         served_items: ['lamb tacos', 'beef tacos', 'water'],
         description: 'nut allergy',
         starters_ready: true,
         mains_ready: true,
-        desserts_ready: true,
+        desserts_ready: false,
         drinks_ready: true,
         is_active: true
       }
