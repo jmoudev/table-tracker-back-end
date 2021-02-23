@@ -19,9 +19,17 @@ module.exports = {
     }
   },
   'GET /api/tables': {
-    description: '',
-    queries: [],
-    exampleResponse: {}
+    description: 'serves up an array of all tables',
+    queries: { is_active: [true, false] },
+    exampleResponse: {
+      tables: [
+        {
+          table_id: 1,
+          table_name: 'table 1',
+          is_active: true
+        }
+      ]
+    }
   },
   'PATCH /api/tables/:table_id/orders': {
     description: '',
