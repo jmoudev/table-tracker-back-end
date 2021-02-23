@@ -1,5 +1,5 @@
 exports.handleRouteNotFound = (req, res, next) => {
-  next({ status: 404, msg: `Not Found` });
+  next({ status: 404, msg: 'Not Found' });
 };
 
 exports.handleBadRequest = (req, res, next) => {
