@@ -2,107 +2,106 @@ module.exports = [
   {
     name: 'Garlic Bread',
     price: 3.00,
-    course: 'Starter'
+    course: 'starter'
   },
   {
     name: 'Prawn Skewers',
     price: 4.50,
-    course: 'Starter'
+    course: 'starter'
   },
   {
     name: 'Nachos and Cheese',
     price: 4.50,
-    course: 'Starter'
+    course: 'starter'
   },
   {
     name: 'Potato Skins',
     price: 3.50,
-    course: 'Starter'
+    course: 'starter'
   },
   {
     name: 'Cheesy Garlic Bread',
     price: 3.50,
-    course: 'Starter'
+    course: 'starter'
   },
   {
     name: 'Beef Taco',
     price: 10.50,
-    course: 'Main'
+    course: 'main'
   },
   {
     name: 'Lamb Taco',
     price: 11.00,
-    course: 'Main'
+    course: 'main'
   },
   {
     name: 'Lasagne',
     price: 7.00,
-    course: 'Main'
+    course: 'main'
   },
   {
     name: 'Seafood Platter',
     price: 15.00,
-    course: 'Main'
+    course: 'main'
   },
   {
     name: 'Seafood Platter Deluxe',
     price: 24.50,
-    course: 'Main'
+    course: 'main'
   },
   {
     name: 'Orange Juice',
     price: 2.90,
-    course: 'Drinks'
+    course: 'drinks'
   },
   {
     name: 'Tequila Shot',
     price: 4.00,
-    course: 'Drinks'
+    course: 'drinks'
   },
   {
     name: 'Margharita',
     price: 7.50,
-    course: 'Drinks'
+    course: 'drinks'
   },
   {
     name: 'Fanta',
     price: 2.70,
-    course: 'Drinks'
+    course: 'drinks'
   },
   {
     name: 'Coca Cola',
     price: 2.95,
-    course: 'Drinks'
+    course: 'drinks'
   },
   {
     name: 'Water',
     price: 1.80,
-    course: 'Drinks'
+    course: 'drinks'
   },
-
   {
     name: 'Rice Pudding',
     price: 3.00,
-    course: 'Dessert'
+    course: 'dessert'
   },
   {
     name: 'Cheesecake',
     price: 4.00,
-    course: 'Dessert'
+    course: 'dessert'
   },
   {
     name: 'Pineapple Upside Down Cake',
     price: 3.50,
-    course: 'Dessert'
+    course: 'dessert'
   },
   {
     name: 'Waffles and Ice Cream',
     price: 4.50,
-    course: 'Dessert'
+    course: 'dessert'
   },
   {
     name: 'Sticky Toffee Pudding',
     price: 5.50,
-    course: 'Dessert'
+    course: 'dessert'
   }
 ];
