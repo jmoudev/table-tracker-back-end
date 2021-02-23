@@ -37,7 +37,20 @@ describe('/api', () => {
     describe('/api/tables', () => {
       describe('GET all tables', () => {
         it.only('SUCCESS - status 200 - returns all tables', () => {
-          return request(app).get('/api/tables').expect(200);
+          return request(app)
+            .get('/api/tables')
+            .expect(200)
+            .then(({ body }) => {
+              body.tables.forEach(topic => {
+                expect(topic).toEqual(
+                  expect.objectContaining({
+                    table_id: expect.any(Number),
+                    name: expect.any(String),
+                    is_active: expect.any(Boolean)
+                  })
+                );
+              });
+            });
         });
         xit('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {});
         xit('ERROR - status 400 - bad request on is_active query', () => {});
