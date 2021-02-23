@@ -21,8 +21,6 @@ describe('/api', () => {
 
     describe('GET all orders', () => {
       xit('SUCCESS - status 200 - returns array of all orders', () => {});
-      xit('SUCCESS - status 200 - returns array of orders with is_active query filtering based on whether the table is currently active', () => {});
-      xit('ERROR - status 400 - bad request on is_active query', () => {});
     });
   });
 
@@ -30,7 +28,8 @@ describe('/api', () => {
     describe('/api/tables', () => {
       describe('GET all tables', () => {
         xit('SUCCESS - status 200 - returns all tables', () => {});
-        xit('SUCCESS - status 200 - returns all active tables', () => {});
+        xit('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {});
+        xit('ERROR - status 400 - bad request on is_active query', () => {});
       });
     });
 
