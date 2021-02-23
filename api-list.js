@@ -3,7 +3,23 @@ module.exports = {
     description:
       'serves up a json representation of all the available endpoints of the api'
   },
-  'POST /table/:table_id/orders': {
+  'GET /api/orders': {
+    description: '',
+    queries: [],
+    exampleResponse: {}
+  },
+  'GET /api/tables': {
+    description: '',
+    queries: [],
+    exampleResponse: {}
+  },
+  'PATCH /api/tables/:table_id/orders': {
+    description: '',
+    queries: null,
+    exampleRequestBody: {},
+    exampleResponse: {}
+  },
+  'POST /tables/:table_id/orders': {
     description:
       'creates a new order for requested table and responds with the new order object',
     queries: null,
