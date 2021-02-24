@@ -96,9 +96,6 @@ describe('/api', () => {
       it('SUCCESS - status 201 - returns a new order', () => {
         return request(app).post('/api/tales/1/orders').send({
           table_id: ''
-
-          // not seeidng any data
-          // should be seeding data
         });
       });
       xit('ERROR - status 404 - table does not exist', () => {});
