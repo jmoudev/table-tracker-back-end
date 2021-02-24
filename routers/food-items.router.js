@@ -1,6 +1,6 @@
 const foodItemsRouter = require('express').Router();
-const { getFoodItems } = require('../controllers/food-items.controllers')
+const { getFoodItems, addFoodItems } = require('../controllers/food-items.controllers')
 
-foodItemsRouter.route('/').get(getFoodItems);
+foodItemsRouter.route('/').get(getFoodItems).post(addFoodItems);
 
 module.exports = foodItemsRouter;
