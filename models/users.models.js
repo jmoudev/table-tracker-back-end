@@ -5,8 +5,7 @@ const fetchAllUsers = () => {
     .returning('*')
     .then((users) => {
       return users;
-    })
-    .catch(next);
+    });
 };
 
 module.exports = { fetchAllUsers };
