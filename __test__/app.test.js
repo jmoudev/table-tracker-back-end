@@ -9,7 +9,6 @@ const app = require('../app');
 describe('/api', () => {
   afterAll(() => connection.destroy());
   beforeEach(() => connection.seed.run());
-
   // Ayako BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/food-items', () => {
     it('GET 200 - responds with an array of all food_items', () => {
@@ -109,5 +108,26 @@ describe('/api', () => {
   });
 
   // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-  describe('/users', () => {});
+  describe('/users', () => {
+    describe('GET', () => {
+      it('SUCCESS - Status 200 - responds with an array of all users', () => {
+        return request(app)
+          .get('/api/users')
+          .expect(200)
+          .then(({ body: { users } }) => {
+            users.forEach((user) => {
+              expect(user).toEqual(
+                expect.objectContaining({
+                  user_id: expect.any(Number),
+                  email: expect.any(String),
+                  first_name: expect.any(String),
+                  last_name: expect.any(String),
+                  role: expect.stringMatching(/Staff|Admin/)
+                })
+              );
+            });
+          });
+      });
+    });
+  });
 });
