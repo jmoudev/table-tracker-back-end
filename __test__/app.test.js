@@ -39,6 +39,15 @@ describe('/api', () => {
         expect(body.msg).toEqual('Bad Request');
       });
     })
+    it('ERROR status 400 - returns an error when a value is missing ', () => {
+      return request(app)
+      .post('/api/food-items')
+      .send({ name: '', price: 8.00, course: 'drinks'})
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request');
+      });
+    })
   })
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/orders', () => {
