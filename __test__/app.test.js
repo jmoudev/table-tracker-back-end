@@ -42,11 +42,22 @@ describe('/api', () => {
     it('ERROR status 400 - returns an error when a value is missing ', () => {
       return request(app)
       .post('/api/food-items')
-      .send({ name: '', price: 8.00, course: 'drinks'})
+      .send({ price: 8.00, course: 'drinks'})
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toEqual('Bad Request');
       });
+    })
+  })
+  describe('PATCH /api/food-items/:food_item_id', () => {
+    it.only('SUCCESS status 201 - changes the name of a food item',() => {
+      return request(app)
+      .patch('/api/food-items/1')
+      .send({ price: 4.00 })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.foodItems.price).toBe(4.00)
+      })
     })
   })
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
