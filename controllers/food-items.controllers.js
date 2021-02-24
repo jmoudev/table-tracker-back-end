@@ -10,8 +10,7 @@ exports.getFoodItems = (req, res, next) => {
 //POST
 exports.addFoodItems = (req, res, next) => {
   const { name, price, course } = req.body;
-  console.log(name, price, course)
   appendFoodItems(name, price, course).then((foodItems) => {
     res.status(201).send(foodItems)
-  })
+  }).catch(next)
 }
