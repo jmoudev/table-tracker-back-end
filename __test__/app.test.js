@@ -34,6 +34,15 @@ describe('/api', () => {
 
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/tables', () => {
+    it('ERROR - status 405 - method not allowed', () => {
+      return request(app)
+        .put('/api/tables')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Method Not Allowed');
+        });
+    });
+
     describe('/api/tables', () => {
       describe('GET all tables', () => {
         it('SUCCESS - status 200 - returns all tables', () => {
@@ -73,7 +82,7 @@ describe('/api', () => {
             .get('/api/tables?is_active=not-a-query')
             .expect(400)
             .then(({ body }) => {
-              expect(body.msg).toEqual('Bad Request');
+              body.msg.toBe('Bad Request');
             });
         });
       });
@@ -98,6 +107,7 @@ describe('/api', () => {
       xit('ERROR - status 400 - bad request food-item not valid', () => {});
     });
   });
+
   // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/users', () => {});
 });
