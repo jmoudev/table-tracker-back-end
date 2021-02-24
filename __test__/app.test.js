@@ -9,6 +9,7 @@ const app = require('../app');
 describe('/api', () => {
   afterAll(() => connection.destroy());
   beforeEach(() => connection.seed.run());
+
 // Ayako BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER 
   describe('GET /api/food-items', () => {
     it('SUCCESS status 200 - responds with an array of all food_items', () => {
@@ -73,6 +74,15 @@ describe('/api', () => {
 
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/tables', () => {
+    it('ERROR - status 405 - method not allowed', () => {
+      return request(app)
+        .put('/api/tables')
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).toBe('Method Not Allowed');
+        });
+    });
+
     describe('/api/tables', () => {
       describe('GET all tables', () => {
         it('SUCCESS - status 200 - returns all tables', () => {
@@ -112,7 +122,7 @@ describe('/api', () => {
             .get('/api/tables?is_active=not-a-query')
             .expect(400)
             .then(({ body }) => {
-              expect(body.msg).toEqual('Bad Request');
+              body.msg.toBe('Bad Request');
             });
         });
       });
@@ -137,7 +147,29 @@ describe('/api', () => {
       xit('ERROR - status 400 - bad request food-item not valid', () => {});
     });
   });
+
   // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-  describe('/users', () => {});
+  describe('/users', () => {
+    describe('GET', () => {
+      it('SUCCESS - Status 200 - responds with an array of all users', () => {
+        return request(app)
+          .get('/api/users')
+          .expect(200)
+          .then(({ body: { users } }) => {
+            users.forEach((user) => {
+              expect(user).toEqual(
+                expect.objectContaining({
+                  user_id: expect.any(Number),
+                  email: expect.any(String),
+                  first_name: expect.any(String),
+                  last_name: expect.any(String),
+                  role: expect.stringMatching(/Staff|Admin/)
+                })
+              );
+            });
+          });
+      });
+    });
+  });
 });
 
