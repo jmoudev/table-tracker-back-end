@@ -258,7 +258,7 @@ describe('/api', () => {
     });
 
     // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-    describe('/users', () => {
+    describe.only('/users', () => {
       describe('GET', () => {
         it('SUCCESS - Status 200 - responds with an array of all users', () => {
           return request(app)
@@ -306,13 +306,15 @@ describe('/api', () => {
               role: 'Staff'
             })
             .then(({ body: { user } }) => {
-              expect(user).objectContaining({
-                user_id: expect.any(Number),
-                email: expect.any(String),
-                first_name: expect.any(String),
-                last_name: expect.any(String),
-                role: expect.stringMatching(/Staff|Admin/)
-              });
+              expect(user).toEqual(
+                expect.objectContaining({
+                  user_id: expect.any(Number),
+                  email: expect.any(String),
+                  first_name: expect.any(String),
+                  last_name: expect.any(String),
+                  role: expect.stringMatching(/Staff|Admin/)
+                })
+              );
             });
         });
       });
