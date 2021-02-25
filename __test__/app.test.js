@@ -98,6 +98,7 @@ describe('/api', () => {
         return request(app)
           .post('/api/tables/3/orders')
           .send({
+            food_items: [1, 2, 3, 4, 5, 6],
             description: 'dairy allergy'
           })
           .expect(201)
