@@ -1,13 +1,13 @@
 exports.handleRouteNotFound = (req, res, next) => {
-  next({ status: 404, msg: 'Not Found' });
+  return Promise.reject({ status: 404, msg: 'Not Found' });
 };
 
 exports.handleBadRequest = (req, res, next) => {
-  next({ status: 400, msg: 'Bad Request' });
+  return Promise.reject({ status: 400, msg: 'Bad Request' });
 };
 
 exports.handleMethodNotAllowed = (req, res, next) => {
-  next({ status: 405, msg: 'Method Not Allowed' });
+  return Promise.reject({ status: 405, msg: 'Method Not Allowed' });
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
@@ -17,6 +17,7 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePSQLErrors = (err, req, res, next) => {
+  console.log(err);
   if (err.code === '22P02') {
     res.status(400).send({ msg: 'Bad Request' });
   } else if (err.code === '23503') {
