@@ -12,7 +12,7 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
     .insert({ table_id, description })
     .returning('*');
 
-  const { order_id } = order;
+  const { order_id } = orderWithOutFoodItems;
 
   await postFoodItemsByOrderId(order_id, food_items);
 
