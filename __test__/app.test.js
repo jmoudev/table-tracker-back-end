@@ -126,7 +126,7 @@ describe('/api', () => {
             expect(body.msg).toBe('Not Found');
           });
       });
-      xit('ERROR - status 400 - bad request on table_id', () => {});
+      it('ERROR - status 400 - bad request on table_id', () => {});
       xit('ERROR - status 400 - bad request body missing required field', () => {});
       xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
       xit('ERROR - status 400 - bad request food-item not valid', () => {});
