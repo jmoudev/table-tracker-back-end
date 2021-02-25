@@ -197,7 +197,7 @@ describe('/api', () => {
               );
             });
         });
-        it('SUCCESS - status 200 - return specified order with food-items added to order', () => {
+        it.only('SUCCESS - status 200 - return specified order with food-items added to order', () => {
           return request(app)
             .patch('/api/tables/1/orders')
             .send({ add_foods: [6, 7, 8] })
@@ -218,7 +218,7 @@ describe('/api', () => {
         it('ERROR - status 404 - bad request body incorrect type', () => {});
       });
       describe('POST order by table_id', () => {
-        it.only('SUCCESS - status 201 - returns a new order', () => {
+        it('SUCCESS - status 201 - returns a new order', () => {
           return request(app)
             .post('/api/tables/3/orders')
             .send({
