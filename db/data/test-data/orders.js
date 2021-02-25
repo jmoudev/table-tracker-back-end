@@ -4,4 +4,5 @@ module.exports = [
     table_id: 2,
     food_items: [6, 7, 8, 9, 10],
     description: 'nut allergy'
-  ]
+  }
+];
