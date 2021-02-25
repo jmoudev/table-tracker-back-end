@@ -175,7 +175,35 @@ describe('/api', () => {
 
     describe('/api/tables/:table_id/orders', () => {
       describe('PATCH order by table_id', () => {
-        it('SUCCESS - status 200 - return specified order with updated food-items', () => {});
+        it.only('SUCCESS - status 200 - return specified active table order when empty body provided', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({})
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 1,
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: expect.any(Boolean),
+                  mains_ready: expect.any(Boolean),
+                  desserts_ready: expect.any(Boolean),
+                  drinks_ready: expect.any(Boolean),
+                  is_active: true,
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
+        it('SUCCESS - status 200 - return specified order with food-items removed', () => {
+          // return request(app)
+          //   .patch('/api/tables/1/orders')
+          //   .send({})
+          //   .expect(200)
+          //   .then(() => {});
+        });
         it('SUCCESS - status 200 - no information in request body does not update order', () => {});
         it('ERROR - status 404 - table does not exist', () => {});
         it('ERROR - status 404 - bad request on table_id', () => {});
