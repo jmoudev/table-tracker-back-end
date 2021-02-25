@@ -1,4 +1,4 @@
-const { userData, foodData, tableData } = require('../data/index');
+const { userData, foodData, tableData, orderData } = require('../data/index');
 
 exports.seed = knex => {
   return knex.migrate
@@ -14,5 +14,21 @@ exports.seed = knex => {
     })
     .then(() => {
       return knex('food_items').insert(foodData).returning('*');
+    })
+    .then(() => {
+      const orders = orderData.map(({ table_id, description }) => ({
+        table_id,
+        description
+      }));
+
+      return knex('orders').insert(orders);
+    })
+    .then(() => {
+      const food_items = orderData.map(({ table_id, food_items }) => ({
+        table_id,
+        food_items
+      }));
+
+      return knex('orders_food_junc').insert(food_items);
     });
 };
