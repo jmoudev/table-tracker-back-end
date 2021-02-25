@@ -24,10 +24,20 @@ exports.seed = knex => {
       return knex('orders').insert(orders);
     })
     .then(() => {
-      const food_items = orderData.map(({ table_id, food_items }) => ({
-        table_id,
-        food_items
-      }));
+      const food_items = orderData.map(({ food_items }, index) => {
+        // food items array per map
+        // need to return
+        const order_id = index + 1;
+        const foodItemsWithOrder = [];
+
+        food_items.forEach(food_item_id => {
+          foodItemsWithOrder.push({ order_id, food_item_id });
+        });
+
+        return foodItemsWithOrder;
+      });
+
+      console.log(food_items);
 
       return knex('orders_food_junc').insert(food_items);
     });
