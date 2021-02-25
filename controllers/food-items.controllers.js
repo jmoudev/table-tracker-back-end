@@ -1,4 +1,4 @@
-const { selectFoodItems, appendFoodItems } = require("../models/food-items.models")
+const { selectFoodItems, appendFoodItems, amendFoodItemsById } = require("../models/food-items.models")
 
 //GET
 exports.getFoodItems = (req, res, next) => {
@@ -11,6 +11,17 @@ exports.getFoodItems = (req, res, next) => {
 exports.addFoodItems = (req, res, next) => {
   const { name, price, course } = req.body;
   appendFoodItems(name, price, course).then((foodItems) => {
+    res.status(201).send(foodItems)
+  }).catch(next)
+}
+
+//PATCH
+exports.updateFoodItemsById = (req, res, next) => {
+  console.log("inside updateFoodItemsById controllers...")
+  const { food_item_id } = req.params;
+  const { name, price, course } = req.body;
+  console.log(food_item_id, name, price, course)
+  amendFoodItemsById(food_item_id, name, price, course).then((foodItems) => {
     res.status(201).send(foodItems)
   }).catch(next)
 }

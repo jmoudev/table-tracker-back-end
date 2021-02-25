@@ -50,14 +50,50 @@ describe('/api', () => {
       });
     })
   })
-  describe('PATCH /api/food-items/:food_item_id', () => {
-    it.only('SUCCESS status 201 - changes the name of a food item',() => {
+  describe.only('PATCH /api/food-items/:food_item_id', () => {
+    it('SUCCESS status 201 - changes a value of a food item',() => {
       return request(app)
       .patch('/api/food-items/1')
-      .send({ price: 4.00 })
+      .send({ name: 'New York Cheesecake', price: 4.50, course: 'dessert' })
       .expect(201)
       .then(({ body }) => {
-        expect(body.foodItems.price).toBe(4.00)
+        expect(body.foodItems).toEqual({ food_item_id: 1, name: 'New York Cheesecake', price: 4.50, course: 'dessert' })
+      })
+    })
+    it('ERROR status 400 - when food_id is not a number', () => {
+      return request(app)
+      .patch('/api/food-items/not-a-number')
+      .send({ name: 'New York Cheesecake', price: 4.50, course: 'dessert' })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request')
+      })
+    })
+    it('ERROR status 404 - when food_id is not on the db yet', () => {
+      return request(app)
+      .patch('/api/food-items/999')
+      .send({ name: 'New York Cheesecake', price: 4.50, course: 'dessert' })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Not Found')
+      })
+    })
+    it('ERROR status 400 - when a string is passed for price', () => {
+      return request(app)
+      .patch('/api/food-items/1')
+      .send({ name: 'New York Cheesecake', price: 'four pounds fifty', course: 'dessert' })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request')
+      })
+    })
+    it('ERROR status 400 - returns an error when a value is missing', () => {
+      return request(app)
+      .patch('/api/food-items/1')
+      .send({ name: 'New York Cheesecake', course: 'dessert' })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual('Bad Request')
       })
     })
   })
