@@ -41,10 +41,67 @@ describe('/api', () => {
           expect(body.msg).toEqual('Bad Request');
         });
     });
+
     it('ERROR status 400 - returns an error when a value is missing ', () => {
       return request(app)
         .post('/api/food-items')
-        .send({ name: '', price: 8.0, course: 'drinks' })
+        .send({ price: 8.0, course: 'drinks' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+  });
+  describe.only('PATCH /api/food-items/:food_item_id', () => {
+    it('SUCCESS status 201 - changes a value of a food item', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({ name: 'New York Cheesecake', price: 4.5, course: 'dessert' })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.foodItems).toEqual({
+            food_item_id: 1,
+            name: 'New York Cheesecake',
+            price: 4.5,
+            course: 'dessert'
+          });
+        });
+    });
+    it('ERROR status 400 - when food_id is not a number', () => {
+      return request(app)
+        .patch('/api/food-items/not-a-number')
+        .send({ name: 'New York Cheesecake', price: 4.5, course: 'dessert' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+    it('ERROR status 404 - when food_id is not on the db yet', () => {
+      return request(app)
+        .patch('/api/food-items/999')
+        .send({ name: 'New York Cheesecake', price: 4.5, course: 'dessert' })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Not Found');
+        });
+    });
+    it('ERROR status 400 - when a string is passed for price', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({
+          name: 'New York Cheesecake',
+          price: 'four pounds fifty',
+          course: 'dessert'
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+    it('ERROR status 400 - returns an error when a value is missing', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({ name: 'New York Cheesecake', course: 'dessert' })
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toEqual('Bad Request');
@@ -71,7 +128,6 @@ describe('/api', () => {
           expect(body.msg).toBe('Method Not Allowed');
         });
     });
-
     describe('GET all tables', () => {
       it('SUCCESS - status 200 - returns all tables', () => {
         return request(app)
@@ -87,40 +143,6 @@ describe('/api', () => {
                   is_active: expect.any(Boolean)
                 })
               );
-
-    describe('/api/tables', () => {
-      describe('GET all tables', () => {
-        it('SUCCESS - status 200 - returns all tables', () => {
-          return request(app)
-            .get('/api/tables')
-            .expect(200)
-            .then(({ body }) => {
-              expect(body.tables).toHaveLength(8);
-              body.tables.forEach((table) => {
-                expect(table).toEqual(
-                  expect.objectContaining({
-                    table_id: expect.any(Number),
-                    name: expect.any(String),
-                    is_active: expect.any(Boolean)
-                  })
-                );
-              });
-            });
-        });
-        it('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {
-          return request(app)
-            .get('/api/tables?is_active=true')
-            .expect(200)
-            .then(({ body }) => {
-              expect(body.tables).toHaveLength(1);
-              body.tables.forEach((table) => {
-                expect(table).toEqual(
-                  expect.objectContaining({
-                    is_active: true
-                  })
-                );
-              });
-
             });
           });
       });
@@ -139,14 +161,29 @@ describe('/api', () => {
             });
           });
       });
-      it('ERROR - status 400 - bad request on is_active query', () => {
-        return request(app)
-          .get('/api/tables?is_active=not-a-query')
-          .expect(400)
-          .then(({ body }) => {
-            body.msg.toBe('Bad Request');
+    });
+    it('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {
+      return request(app)
+        .get('/api/tables?is_active=true')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.tables).toHaveLength(1);
+          body.tables.forEach(table => {
+            expect(table).toEqual(
+              expect.objectContaining({
+                is_active: true
+              })
+            );
           });
-      });
+        });
+    });
+    it('ERROR - status 400 - bad request on is_active query', () => {
+      return request(app)
+        .get('/api/tables?is_active=not-a-query')
+        .expect(400)
+        .then(({ body }) => {
+          body.msg.toBe('Bad Request');
+        });
     });
   });
   describe('/api/tables/:table_id/orders', () => {
@@ -235,14 +272,14 @@ describe('/api', () => {
   });
 
   // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-  describe.only('/users', () => {
+  describe('/users', () => {
     describe('GET', () => {
       it('SUCCESS - Status 200 - responds with an array of all users', () => {
         return request(app)
           .get('/api/users')
           .expect(200)
           .then(({ body: { users } }) => {
-            users.forEach((user) => {
+            users.forEach(user => {
               expect(user).toEqual(
                 expect.objectContaining({
                   user_id: expect.any(Number),
