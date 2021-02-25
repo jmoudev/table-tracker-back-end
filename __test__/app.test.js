@@ -136,7 +136,7 @@ describe('/api', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.tables).toHaveLength(8);
-              body.tables.forEach(table => {
+              body.tables.forEach((table) => {
                 expect(table).toEqual(
                   expect.objectContaining({
                     table_id: expect.any(Number),
@@ -153,7 +153,7 @@ describe('/api', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.tables).toHaveLength(1);
-              body.tables.forEach(table => {
+              body.tables.forEach((table) => {
                 expect(table).toEqual(
                   expect.objectContaining({
                     is_active: true
@@ -265,7 +265,7 @@ describe('/api', () => {
             .get('/api/users')
             .expect(200)
             .then(({ body: { users } }) => {
-              users.forEach(user => {
+              users.forEach((user) => {
                 expect(user).toEqual(
                   expect.objectContaining({
                     user_id: expect.any(Number),
@@ -279,6 +279,7 @@ describe('/api', () => {
             });
         });
       });
+
       describe('DELETE', () => {
         it('SUCCESS - Status 204 - responds with no content status code after deleting', () => {
           return request(app).delete('/api/users/1').expect(204);
@@ -290,6 +291,28 @@ describe('/api', () => {
             .expect(404)
             .then(({ body: { msg } }) => {
               expect(msg).toBe('No user found for user id: 747');
+            });
+        });
+      });
+
+      describe('POST', () => {
+        it('SUCCESS - Status 201 - responds with the posted user', () => {
+          return request(app)
+            .post('/api/users')
+            .send({
+              email: 'waiterwalter@tabletracker.com',
+              first_name: 'wal',
+              last_name: 'ter',
+              role: 'Staff'
+            })
+            .then(({ body: { user } }) => {
+              expect(user).objectContaining({
+                user_id: expect.any(Number),
+                email: expect.any(String),
+                first_name: expect.any(String),
+                last_name: expect.any(String),
+                role: expect.stringMatching(/Staff|Admin/)
+              });
             });
         });
       });
