@@ -111,9 +111,9 @@ describe('/api', () => {
     it('ERROR - status 405 - method not allowed', () => {});
 
     describe('GET all orders', () => {
-      xit('SUCCESS - status 200 - returns array of all orders', () => {});
+      it('SUCCESS - status 200 - returns array of all orders', () => {});
       // by table query
-      xit('SUCCESS - status 200 - returns array of all orders', () => {});
+      it('SUCCESS - status 200 - returns array of all orders', () => {});
     });
   });
 
@@ -175,11 +175,11 @@ describe('/api', () => {
 
     describe('/api/tables/:table_id/orders', () => {
       describe('PATCH order by table_id', () => {
-        xit('SUCCESS - status 200 - return specified order with updated food-items', () => {});
-        xit('SUCCESS - status 200 - no information in request body does not update order', () => {});
-        xit('ERROR - status 404 - table does not exist', () => {});
-        xit('ERROR - status 404 - bad request on table_id', () => {});
-        xit('ERROR - status 404 - bad request body incorrect type', () => {});
+        it('SUCCESS - status 200 - return specified order with updated food-items', () => {});
+        it('SUCCESS - status 200 - no information in request body does not update order', () => {});
+        it('ERROR - status 404 - table does not exist', () => {});
+        it('ERROR - status 404 - bad request on table_id', () => {});
+        it('ERROR - status 404 - bad request body incorrect type', () => {});
       });
       describe('POST order by table_id', () => {
         it('SUCCESS - status 201 - returns a new order', () => {
