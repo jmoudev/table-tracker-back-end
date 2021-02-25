@@ -28,3 +28,17 @@ exports.sendOrderByTableId = (table_id, order) => {
         });
     });
 };
+
+exports.updateOrderByTableId = (table_id, body) => {
+  console.log(table_id, body);
+
+  // first check if only one active order per the chosen table if not throw err
+  // get single order_id
+  // need to go into orders table and filter where tbale tbale_id and where
+  return connection('orders')
+    .select('*')
+    .where({ table_id, is_active: true })
+    .then(order => {
+      console.log(order);
+    });
+};
