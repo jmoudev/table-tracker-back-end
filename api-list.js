@@ -3,6 +3,18 @@ module.exports = {
     description:
       'serves up a json representation of all the available endpoints of the api'
   },
+<<<<<<< HEAD
+  'GET /api/food-items' : {
+    description: 'serves an array of all foodItems',
+    queries: null, //can be added later
+    exampleResponse: {
+      foodItems : [
+        {
+          food_item_id: 1,
+          name: 'Garlic Bread',
+          price: 3.00,
+          course: 'starter'
+=======
   'GET /api/orders': {
     description: 'serves up an array of all orders',
     queries: null,
@@ -19,10 +31,24 @@ module.exports = {
           desserts_ready: true,
           drinks_ready: true,
           is_active: true
+>>>>>>> 8ae26c5d7a6d2691fa20e5365378b024df6bff03
         }
       ]
     }
   },
+<<<<<<< HEAD
+  'POST /api/food-items': {
+    description: 'serves an array of all foodItems',
+    exampleResponse: {
+      foodItems : [
+        {
+          food_item_id: 22,
+          name: 'Pina Colada', 
+          price: 8.00, 
+          course: 'drinks'}
+      ]
+    }
+=======
   'GET /api/tables': {
     description: 'serves up an array of all tables',
     queries: { is_active: [true, false] },
@@ -93,5 +119,6 @@ module.exports = {
       description: 'Nut allergy',
       is_ready: false
     }
+>>>>>>> 8ae26c5d7a6d2691fa20e5365378b024df6bff03
   }
 };
