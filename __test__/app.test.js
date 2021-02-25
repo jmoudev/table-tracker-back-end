@@ -92,7 +92,6 @@ describe('/api', () => {
       xit('ERROR - status 404 - bad request body incorrect type', () => {});
     });
 
-    // needs to return an object with name and course
     describe.only('POST order by table_id', () => {
       it('SUCCESS - status 201 - returns a new order', () => {
         return request(app)
@@ -108,7 +107,7 @@ describe('/api', () => {
                 order_id: expect.any(Number),
                 table_id: 3,
                 description: 'dairy allergy',
-                food_items: [''],
+                food_items: expect.any(Array),
                 starters_ready: expect.any(Boolean),
                 mains_ready: expect.any(Boolean),
                 desserts_ready: expect.any(Boolean),
@@ -119,7 +118,14 @@ describe('/api', () => {
             );
           });
       });
-      xit('ERROR - status 404 - table does not exist', () => {});
+      it('ERROR - status 404 - table does not exist', () => {
+        return request(app)
+          .post('/api/tables/999/orders')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Not Found');
+          });
+      });
       xit('ERROR - status 400 - bad request on table_id', () => {});
       xit('ERROR - status 400 - bad request body missing required field', () => {});
       xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
