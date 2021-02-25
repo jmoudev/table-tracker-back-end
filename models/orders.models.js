@@ -14,31 +14,73 @@ exports.sendOrderByTableId = (table_id, order) => {
     .then(([order]) => {
       const { order_id } = order;
 
-      const junc_pairs = food_items.map(food_item_id => {
-        return { order_id, food_item_id };
+      return postFoodItemsByOrderId(order_id, food_items).then(result => {
+        return connection('orders_food_junc')
+          .select('*')
+          .then(result => {
+            return getOrderFoodsByOrderId(order_id).then(foodIds => {
+              const orderWithFoodItems = { ...order };
+
+              orderWithFoodItems.food_items = foodIds;
+
+              return orderWithFoodItems;
+            });
+          });
       });
 
-      return connection('orders_food_junc')
-        .insert(junc_pairs)
-        .then(() => {
-          const orderWithFoodItems = { ...order };
-          orderWithFoodItems.food_items = food_items;
-
-          return orderWithFoodItems;
-        });
+      // const orderWithFoodItems = { ...order };
+      // orderWithFoodItems.food_items = food_items;
     });
 };
 
-exports.updateOrderByTableId = (table_id, body) => {
-  console.log(table_id, body);
+// exports.updateOrderByTableId = (table_id, body) => {
+//   return connection('orders')
+//     .select('*')
+//     .where({ table_id, is_active: true })
+//     .then(([order]) => {
+//       // if (!orders.length) {
+//       // }
+//       // if (orders.length > 1) {
+//       // }
+//       // console.log(order);
 
-  // first check if only one active order per the chosen table if not throw err
-  // get single order_id
-  // need to go into orders table and filter where tbale tbale_id and where
-  return connection('orders')
+//       return order;
+//     })
+//     .then(order => {
+//       const { order_id } = order;
+
+//       return connection('orders_food_junc')
+//         .select('*')
+//         .where({ order_id })
+//         .then(juncArr => {
+//           const orderWithFoodItems = { ...order };
+//           const foodsArr = juncArr.map(food => food.food_item_id);
+
+//           orderWithFoodItems.food_items = foodsArr;
+
+//           return orderWithFoodItems;
+//         });
+//     });
+// };
+
+// postFoodToJuncTable
+// takes order_id and food items and posts returning nothing
+
+const getOrderFoodsByOrderId = order_id => {
+  return connection('orders_food_junc')
     .select('*')
-    .where({ table_id, is_active: true })
-    .then(order => {
-      console.log(order);
+    .where({ order_id })
+    .then(result => {
+      const foodIds = result.map(row => row.food_item_id);
+
+      return foodIds;
     });
+};
+
+const postFoodItemsByOrderId = (order_id, foodsArr) => {
+  const juncPairsArr = foodsArr.map(food_item_id => {
+    return { order_id, food_item_id };
+  });
+
+  return connection('orders_food_junc').insert(juncPairsArr);
 };
