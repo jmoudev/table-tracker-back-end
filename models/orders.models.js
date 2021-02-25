@@ -25,38 +25,31 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
   return orderWithFoodItems;
 };
 
-// exports.updateOrderByTableId = (table_id, body) => {
-//   return connection('orders')
-//     .select('*')
-//     .where({ table_id, is_active: true })
-//     .then(([order]) => {
-//       // if (!orders.length) {
-//       // }
-//       // if (orders.length > 1) {
-//       // }
-//       // console.log(order);
+exports.updateOrderByTableId = async (table_id, { add_foods }) => {
+  const { order_id } = await getActiveOrderByTableId(table_id);
 
-//       return order;
-//     })
-//     .then(order => {
-//       const { order_id } = order;
+  if (add_foods) {
+    await postFoodItemsByOrderId(order_id);
+  }
 
-//       return connection('orders_food_junc')
-//         .select('*')
-//         .where({ order_id })
-//         .then(juncArr => {
-//           const orderWithFoodItems = { ...order };
-//           const foodsArr = juncArr.map(food => food.food_item_id);
+  const orderWithOutFoodItems = await getActiveOrderByTableId(table_id);
+  const foodIds = await getOrderFoodsByOrderId(order_id);
+  const orderWithFoodItems = { ...orderWithOutFoodItems };
 
-//           orderWithFoodItems.food_items = foodsArr;
+  orderWithFoodItems.food_items = foodIds;
 
-//           return orderWithFoodItems;
-//         });
-//     });
-// };
+  return orderWithFoodItems;
+};
 
-// postFoodToJuncTable
-// takes order_id and food items and posts returning nothing
+const getActiveOrderByTableId = async table_id => {
+  const [order] = await connection('orders')
+    .select('*')
+    .where({ table_id, is_active: true });
+
+  console.log(order);
+
+  return order;
+};
 
 const getOrderFoodsByOrderId = async order_id => {
   const juncRows = await connection('orders_food_junc')
