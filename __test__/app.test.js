@@ -175,7 +175,7 @@ describe('/api', () => {
 
     describe('/api/tables/:table_id/orders', () => {
       describe('PATCH order by table_id', () => {
-        it.only('SUCCESS - status 200 - return specified active table order when empty body provided', () => {
+        it('SUCCESS - status 200 - return specified active table order when empty body provided', () => {
           return request(app)
             .patch('/api/tables/1/orders')
             .send({})
@@ -197,12 +197,20 @@ describe('/api', () => {
               );
             });
         });
-        it('SUCCESS - status 200 - return specified order with food-items removed', () => {
-          // return request(app)
-          //   .patch('/api/tables/1/orders')
-          //   .send({})
-          //   .expect(200)
-          //   .then(() => {});
+        it('SUCCESS - status 200 - return specified order with food-items added to order', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({ add_foods: [6, 7, 8] })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  table_id: 1,
+                  food_items: [1, 2, 3, 4, 5, 6, 7, 8],
+                  is_active: true
+                })
+              );
+            });
         });
         it('SUCCESS - status 200 - no information in request body does not update order', () => {});
         it('ERROR - status 404 - table does not exist', () => {});
@@ -210,7 +218,7 @@ describe('/api', () => {
         it('ERROR - status 404 - bad request body incorrect type', () => {});
       });
       describe('POST order by table_id', () => {
-        it('SUCCESS - status 201 - returns a new order', () => {
+        it.only('SUCCESS - status 201 - returns a new order', () => {
           return request(app)
             .post('/api/tables/3/orders')
             .send({
@@ -224,7 +232,7 @@ describe('/api', () => {
                   order_id: expect.any(Number),
                   table_id: 3,
                   description: 'dairy allergy',
-                  food_items: expect.any(Array),
+                  food_items: [1, 2, 3, 4, 5, 6],
                   starters_ready: expect.any(Boolean),
                   mains_ready: expect.any(Boolean),
                   desserts_ready: expect.any(Boolean),

@@ -19,8 +19,8 @@ exports.patchOrderByTableId = (req, res, next) => {
   const { body } = req;
 
   updateOrderByTableId(table_id, body)
-    .then(() => {
-      res.sendStatus(200);
+    .then(order => {
+      res.status(200).send({ order });
     })
     .catch(next);
 };
