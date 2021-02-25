@@ -92,11 +92,31 @@ describe('/api', () => {
       xit('ERROR - status 404 - bad request body incorrect type', () => {});
     });
 
-    describe('POST order by table_id', () => {
+    // needs to return an object with name and course
+    describe.only('POST order by table_id', () => {
       it('SUCCESS - status 201 - returns a new order', () => {
-        return request(app).post('/api/tales/1/orders').send({
-          table_id: ''
-        });
+        return request(app)
+          .post('/api/tables/3/orders')
+          .send({
+            description: 'dairy allergy'
+          })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.order).toEqual(
+              expect.objectContaining({
+                order_id: expect.any(Number),
+                table_id: 3,
+                description: 'dairy allergy',
+                food_items: [''],
+                starters_ready: expect.any(Boolean),
+                mains_ready: expect.any(Boolean),
+                desserts_ready: expect.any(Boolean),
+                drinks_ready: expect.any(Boolean),
+                is_active: expect.any(Boolean),
+                created_at: expect.any(String)
+              })
+            );
+          });
       });
       xit('ERROR - status 404 - table does not exist', () => {});
       xit('ERROR - status 400 - bad request on table_id', () => {});
