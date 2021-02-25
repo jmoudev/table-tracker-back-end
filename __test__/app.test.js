@@ -92,8 +92,8 @@ describe('/api', () => {
       xit('ERROR - status 404 - bad request body incorrect type', () => {});
     });
 
-    describe.only('POST order by table_id', () => {
-      xit('SUCCESS - status 201 - returns a new order', () => {
+    describe('POST order by table_id', () => {
+      it('SUCCESS - status 201 - returns a new order', () => {
         return request(app)
           .post('/api/tables/3/orders')
           .send({
@@ -118,7 +118,7 @@ describe('/api', () => {
             );
           });
       });
-      xit('ERROR - status 404 - table does not exist', () => {
+      it('ERROR - status 404 - table does not exist', () => {
         return request(app)
           .post('/api/tables/999/orders')
           .send({
@@ -130,7 +130,7 @@ describe('/api', () => {
             expect(body.msg).toBe('Not Found');
           });
       });
-      xit('ERROR - status 400 - bad request on table_id', () => {
+      it('ERROR - status 400 - bad request on table_id', () => {
         return request(app)
           .post('/api/tables/not-an-id/orders')
           .send({
@@ -153,8 +153,18 @@ describe('/api', () => {
             expect(body.msg).toBe('Bad Request');
           });
       });
-      xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
-      xit('ERROR - status 400 - bad request food-item not valid', () => {});
+      it('ERROR - status 400 - bad request food-item not valid', () => {
+        return request(app)
+          .post('/api/tables/1/orders')
+          .send({
+            food_items: ['invalid-food-id'],
+            description: 'dairy allergy'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request');
+          });
+      });
     });
   });
 
