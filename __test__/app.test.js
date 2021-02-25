@@ -12,7 +12,7 @@ describe('/api', () => {
 
   // Ayako BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('GET /api/food-items', () => {
-    it.only('SUCCESS status 200 - responds with an array of all food_items', () => {
+    it('SUCCESS status 200 - responds with an array of all food_items', () => {
       return request(app)
         .get('/api/food-items')
         .expect(200)
@@ -43,7 +43,63 @@ describe('/api', () => {
     it('ERROR status 400 - returns an error when a value is missing ', () => {
       return request(app)
         .post('/api/food-items')
-        .send({ name: '', price: 8.0, course: 'drinks' })
+        .send({ price: 8.0, course: 'drinks' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+  });
+  describe('PATCH /api/food-items/:food_item_id', () => {
+    it('SUCCESS status 201 - changes a value of a food item', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({ name: 'New York Cheesecake', price: 4.5, course: 'dessert' })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.foodItems).toEqual({
+            food_item_id: 1,
+            name: 'New York Cheesecake',
+            price: 4.5,
+            course: 'dessert'
+          });
+        });
+    });
+    it('ERROR status 400 - when food_id is not a number', () => {
+      return request(app)
+        .patch('/api/food-items/not-a-number')
+        .send({ name: 'New York Cheesecake', price: 4.5, course: 'dessert' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+    it('ERROR status 404 - when food_id is not on the db yet', () => {
+      return request(app)
+        .patch('/api/food-items/999')
+        .send({ name: 'New York Cheesecake', price: 4.5, course: 'dessert' })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Not Found');
+        });
+    });
+    it('ERROR status 400 - when a string is passed for price', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({
+          name: 'New York Cheesecake',
+          price: 'four pounds fifty',
+          course: 'dessert'
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+    it('ERROR status 400 - returns an error when a value is missing', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({ name: 'New York Cheesecake', course: 'dessert' })
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toEqual('Bad Request');
@@ -111,7 +167,7 @@ describe('/api', () => {
             .get('/api/tables?is_active=not-a-query')
             .expect(400)
             .then(({ body }) => {
-              body.msg.toBe('Bad Request');
+              expect(body.msg).toBe('Bad Request');
             });
         });
       });
@@ -125,14 +181,79 @@ describe('/api', () => {
         xit('ERROR - status 404 - bad request on table_id', () => {});
         xit('ERROR - status 404 - bad request body incorrect type', () => {});
       });
-
       describe('POST order by table_id', () => {
-        xit('SUCCESS - status 201 - returns a new order', () => {});
-        xit('ERROR - status 404 - table does not exist', () => {});
-        xit('ERROR - status 400 - bad request on table_id', () => {});
-        xit('ERROR - status 400 - bad request body missing required field', () => {});
-        xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
-        xit('ERROR - status 400 - bad request food-item not valid', () => {});
+        it('SUCCESS - status 201 - returns a new order', () => {
+          return request(app)
+            .post('/api/tables/3/orders')
+            .send({
+              food_items: [1, 2, 3, 4, 5, 6],
+              description: 'dairy allergy'
+            })
+            .expect(201)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 3,
+                  description: 'dairy allergy',
+                  food_items: expect.any(Array),
+                  starters_ready: expect.any(Boolean),
+                  mains_ready: expect.any(Boolean),
+                  desserts_ready: expect.any(Boolean),
+                  drinks_ready: expect.any(Boolean),
+                  is_active: expect.any(Boolean),
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
+        it('ERROR - status 404 - table does not exist', () => {
+          return request(app)
+            .post('/api/tables/999/orders')
+            .send({
+              food_items: [1, 2, 3, 4, 5, 6],
+              description: 'dairy allergy'
+            })
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toBe('Not Found');
+            });
+        });
+        it('ERROR - status 400 - bad request on table_id', () => {
+          return request(app)
+            .post('/api/tables/not-an-id/orders')
+            .send({
+              food_items: [1, 2, 3, 4, 5, 6],
+              description: 'dairy allergy'
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe('Bad Request');
+            });
+        });
+        it('ERROR - status 400 - bad request body missing required field', () => {
+          return request(app)
+            .post('/api/tables/1/orders')
+            .send({
+              description: 'dairy allergy'
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe('Bad Request');
+            });
+        });
+        it('ERROR - status 400 - bad request food-item not valid', () => {
+          return request(app)
+            .post('/api/tables/1/orders')
+            .send({
+              food_items: ['invalid-food-id'],
+              description: 'dairy allergy'
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe('Bad Request');
+            });
+        });
       });
     });
 
@@ -155,6 +276,20 @@ describe('/api', () => {
                   })
                 );
               });
+            });
+        });
+      });
+      describe('DELETE', () => {
+        it('SUCCESS - Status 204 - responds with no content status code after deleting', () => {
+          return request(app).delete('/api/users/1').expect(204);
+        });
+
+        it('ERROR Status 404 - responds with an error message if no user was found', () => {
+          return request(app)
+            .delete('/api/users/747')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('No user found for user id: 747');
             });
         });
       });
