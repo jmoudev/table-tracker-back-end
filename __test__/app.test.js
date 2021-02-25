@@ -164,6 +164,15 @@ describe('/api', () => {
       it('SUCCESS - Status 204 - responds with no content status code after deleting', () => {
         return request(app).delete('/api/users/1').expect(204);
       });
+
+      it('ERROR Status 404 - responds with an error message if no user was found', () => {
+        return request(app)
+          .delete('/api/users/747')
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('No user found for user id: 747');
+          });
+      });
     });
   });
 });
