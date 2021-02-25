@@ -1,4 +1,4 @@
-const { fetchAllUsers } = require('../models/users.models');
+const { fetchAllUsers, removeUserById } = require('../models/users.models');
 
 const getAllUsers = (req, res, next) => {
   fetchAllUsers()
@@ -8,4 +8,11 @@ const getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getAllUsers };
+const deleteUserById = (req, res, next) => {
+  const { user_id } = req.params;
+  removeUserById(user_id)
+    .then(() => res.sendStatus(204))
+    .catch(next);
+};
+
+module.exports = { getAllUsers, deleteUserById };

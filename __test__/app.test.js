@@ -10,46 +10,46 @@ describe('/api', () => {
   afterAll(() => connection.destroy());
   beforeEach(() => connection.seed.run());
 
-// Ayako BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER 
+  // Ayako BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('GET /api/food-items', () => {
     it('SUCCESS status 200 - responds with an array of all food_items', () => {
       return request(app)
-      .get('/api/food-items')
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.foodItems).toHaveLength(21)
-      })
-    })
-  })
+        .get('/api/food-items')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.foodItems).toHaveLength(21);
+        });
+    });
+  });
   describe('POST /api/food-items', () => {
     it('SUCCESS status 201 - adds a food item to food_items table', () => {
       return request(app)
-      .post('/api/food-items')
-      .send({ name: 'Pina Colada', price: 8.00, course: 'drinks'})
-      .expect(201)
-      .then(({ body }) => {
-        expect(body.foodItems.name).toBe('Pina Colada')
-      })
-    })
+        .post('/api/food-items')
+        .send({ name: 'Pina Colada', price: 8.0, course: 'drinks' })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.foodItems.name).toBe('Pina Colada');
+        });
+    });
     it('ERROR status 400 - returns an error when a string is passed for price ', () => {
       return request(app)
-      .post('/api/food-items')
-      .send({ name: 'Pina Colada', price: 'eight pounds', course: 'drinks'})
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toEqual('Bad Request');
-      });
-    })
+        .post('/api/food-items')
+        .send({ name: 'Pina Colada', price: 'eight pounds', course: 'drinks' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
     it('ERROR status 400 - returns an error when a value is missing ', () => {
       return request(app)
-      .post('/api/food-items')
-      .send({ name: '', price: 8.00, course: 'drinks'})
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toEqual('Bad Request');
-      });
-    })
-  })
+        .post('/api/food-items')
+        .send({ name: '', price: 8.0, course: 'drinks' })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        });
+    });
+  });
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/orders', () => {
     it('ERROR - status 405 - method not allowed', () => {});
@@ -80,7 +80,7 @@ describe('/api', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.tables).toHaveLength(8);
-              body.tables.forEach(table => {
+              body.tables.forEach((table) => {
                 expect(table).toEqual(
                   expect.objectContaining({
                     table_id: expect.any(Number),
@@ -97,7 +97,7 @@ describe('/api', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.tables).toHaveLength(1);
-              body.tables.forEach(table => {
+              body.tables.forEach((table) => {
                 expect(table).toEqual(
                   expect.objectContaining({
                     is_active: true
@@ -138,7 +138,7 @@ describe('/api', () => {
   });
 
   // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-  describe('/users', () => {
+  describe.only('/users', () => {
     describe('GET', () => {
       it('SUCCESS - Status 200 - responds with an array of all users', () => {
         return request(app)
@@ -159,6 +159,11 @@ describe('/api', () => {
           });
       });
     });
+
+    describe('DELETE', () => {
+      it('SUCCESS - Status 204 - responds with no content status code after deleting', () => {
+        return request(app).delete('/api/users/1').expect(204);
+      });
+    });
   });
 });
-
