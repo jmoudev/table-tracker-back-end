@@ -27,9 +27,6 @@ exports.sendOrderByTableId = (table_id, order) => {
             });
           });
       });
-
-      // const orderWithFoodItems = { ...order };
-      // orderWithFoodItems.food_items = food_items;
     });
 };
 
@@ -66,15 +63,14 @@ exports.sendOrderByTableId = (table_id, order) => {
 // postFoodToJuncTable
 // takes order_id and food items and posts returning nothing
 
-const getOrderFoodsByOrderId = order_id => {
-  return connection('orders_food_junc')
+const getOrderFoodsByOrderId = async order_id => {
+  const juncRows = await connection('orders_food_junc')
     .select('*')
-    .where({ order_id })
-    .then(result => {
-      const foodIds = result.map(row => row.food_item_id);
+    .where({ order_id });
 
-      return foodIds;
-    });
+  const foodIds = juncRows.map(row => row.food_item_id);
+
+  return foodIds;
 };
 
 const postFoodItemsByOrderId = (order_id, foodsArr) => {
