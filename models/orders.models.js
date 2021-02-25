@@ -1,33 +1,28 @@
 const connection = require('../db/connection');
 const { handleBadRequest } = require('../controllers/errors.controllers');
 
-exports.sendOrderByTableId = (table_id, order) => {
-  const { description, food_items } = order;
+exports.sendOrderByTableId = async (table_id, orderBody) => {
+  const { description, food_items } = orderBody;
 
   if (!food_items) {
     return handleBadRequest();
   }
 
-  return connection('orders')
+  const [orderWithOutFoodItems] = await connection('orders')
     .insert({ table_id, description })
-    .returning('*')
-    .then(([order]) => {
-      const { order_id } = order;
+    .returning('*');
 
-      return postFoodItemsByOrderId(order_id, food_items).then(result => {
-        return connection('orders_food_junc')
-          .select('*')
-          .then(result => {
-            return getOrderFoodsByOrderId(order_id).then(foodIds => {
-              const orderWithFoodItems = { ...order };
+  const { order_id } = order;
 
-              orderWithFoodItems.food_items = foodIds;
+  await postFoodItemsByOrderId(order_id, food_items);
 
-              return orderWithFoodItems;
-            });
-          });
-      });
-    });
+  const foodIds = await getOrderFoodsByOrderId(order_id);
+
+  const orderWithFoodItems = { ...orderWithOutFoodItems };
+
+  orderWithFoodItems.food_items = foodIds;
+
+  return orderWithFoodItems;
 };
 
 // exports.updateOrderByTableId = (table_id, body) => {
