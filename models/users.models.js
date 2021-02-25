@@ -22,4 +22,13 @@ const removeUserById = (user_id) => {
     });
 };
 
-module.exports = { fetchAllUsers, removeUserById };
+const addUser = (email, first_name, last_name, role) => {
+  const newUser = { email, first_name, last_name, role };
+
+  return connection('users')
+    .insert(newUser)
+    .returning('*')
+    .then(([user]) => user);
+};
+
+module.exports = { fetchAllUsers, removeUserById, addUser };
