@@ -93,7 +93,7 @@ describe('/api', () => {
     });
 
     describe.only('POST order by table_id', () => {
-      it('SUCCESS - status 201 - returns a new order', () => {
+      xit('SUCCESS - status 201 - returns a new order', () => {
         return request(app)
           .post('/api/tables/3/orders')
           .send({
@@ -118,16 +118,41 @@ describe('/api', () => {
             );
           });
       });
-      it('ERROR - status 404 - table does not exist', () => {
+      xit('ERROR - status 404 - table does not exist', () => {
         return request(app)
           .post('/api/tables/999/orders')
+          .send({
+            food_items: [1, 2, 3, 4, 5, 6],
+            description: 'dairy allergy'
+          })
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).toBe('Not Found');
           });
       });
-      it('ERROR - status 400 - bad request on table_id', () => {});
-      xit('ERROR - status 400 - bad request body missing required field', () => {});
+      xit('ERROR - status 400 - bad request on table_id', () => {
+        return request(app)
+          .post('/api/tables/not-an-id/orders')
+          .send({
+            food_items: [1, 2, 3, 4, 5, 6],
+            description: 'dairy allergy'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request');
+          });
+      });
+      it('ERROR - status 400 - bad request body missing required field', () => {
+        return request(app)
+          .post('/api/tables/1/orders')
+          .send({
+            description: 'dairy allergy'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request');
+          });
+      });
       xit('ERROR - status 400 - bad request body missing multiple required fields', () => {});
       xit('ERROR - status 400 - bad request food-item not valid', () => {});
     });
