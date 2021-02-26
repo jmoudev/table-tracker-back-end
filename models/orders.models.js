@@ -8,17 +8,17 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
     return handleBadRequest();
   }
 
-  const [orderWithOutFoodItems] = await connection('orders')
+  const [orderWithoutFoodItems] = await connection('orders')
     .insert({ table_id, description })
     .returning('*');
 
-  const { order_id } = orderWithOutFoodItems;
+  const { order_id } = orderWithoutFoodItems;
 
   await postFoodItemsByOrderId(order_id, food_items);
 
   const foodIds = await getOrderFoodsByOrderId(order_id);
 
-  const orderWithFoodItems = { ...orderWithOutFoodItems };
+  const orderWithFoodItems = { ...orderWithoutFoodItems };
 
   orderWithFoodItems.food_items = foodIds;
 
@@ -29,12 +29,13 @@ exports.updateOrderByTableId = async (table_id, { add_foods }) => {
   const { order_id } = await getActiveOrderByTableId(table_id);
 
   if (add_foods) {
-    await postFoodItemsByOrderId(order_id);
+    await postFoodItemsByOrderId(order_id, add_foods);
   }
+  // if active order
+  const orderWithoutFoodItems = await getActiveOrderByTableId(table_id);
 
-  const orderWithOutFoodItems = await getActiveOrderByTableId(table_id);
   const foodIds = await getOrderFoodsByOrderId(order_id);
-  const orderWithFoodItems = { ...orderWithOutFoodItems };
+  const orderWithFoodItems = { ...orderWithoutFoodItems };
 
   orderWithFoodItems.food_items = foodIds;
 
@@ -45,8 +46,6 @@ const getActiveOrderByTableId = async table_id => {
   const [order] = await connection('orders')
     .select('*')
     .where({ table_id, is_active: true });
-
-  console.log(order);
 
   return order;
 };
