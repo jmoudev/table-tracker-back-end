@@ -50,7 +50,6 @@ describe('/api', () => {
         });
     });
   });
-
   describe('PATCH /api/food-items/:food_item_id', () => {
     it('SUCCESS status 200 - changes a value of a food item', () => {
       return request(app)
@@ -127,6 +126,40 @@ describe('/api', () => {
         });
     });
   });
+
+  describe('GET /api/food-items/:food_item_id', () => {
+    it('SUCCESS status 200 - returns a food-item of food_item_id', () => {
+      return request(app)
+        .get('/api/food-items/1')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.foodItem).toEqual({
+            food_item_id: 1,
+            name: 'Garlic Bread',
+            price: 3,
+            course: 'starter',
+            is_active: true,
+          });
+        });
+    });
+    it('ERROR status 400 - when food_item_id is not a number', () => { 
+      return request(app)
+        .get('/api/food-items/not-a-number')
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Bad Request');
+        })
+     });
+    it('ERROR status 404 - when food_item_id is not on the db yet', () => { 
+      return request(app)
+        .get('/api/food-items/999')
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual('Not Found');
+        })
+     });
+  })
+
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/orders', () => {
     it('ERROR - status 405 - method not allowed', () => {});
@@ -279,7 +312,7 @@ describe('/api', () => {
     });
 
     // Zak BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-    describe.only('/users', () => {
+    describe('/users', () => {
       describe('GET', () => {
         it('SUCCESS - Status 200 - responds with an array of all users', () => {
           return request(app)
