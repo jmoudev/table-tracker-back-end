@@ -1,45 +1,38 @@
 const { userData, foodData, tableData, orderData } = require('../data/index');
 
-exports.seed = knex => {
-  const food_items = orderData.map(({ food_items }, index) => {
-    // food items array per map
-    // need to return
+exports.seed = async knex => {
+  const foodItems = orderData.map(({ food_items }, index) => {
     const order_id = index + 1;
-    const foodItemsWithOrder = [];
+    const orderFoods = [];
 
     food_items.forEach(food_item_id => {
-      foodItemsWithOrder.push({ order_id, food_item_id });
+      orderFoods.push({ order_id, food_item_id });
     });
 
-    return foodItemsWithOrder;
+    return orderFoods;
   });
 
-  return knex.migrate
-    .rollback()
-    .then(() => {
-      return knex.migrate.latest();
-    })
-    .then(() => {
-      return knex('users').insert(userData).returning('*');
-    })
-    .then(() => {
-      return knex('tables').insert(tableData).returning('*');
-    })
-    .then(() => {
-      return knex('food_items').insert(foodData).returning('*');
-    })
-    .then(() => {
-      const orders = orderData.map(({ table_id, description }) => ({
-        table_id,
-        description
-      }));
+  await knex.migrate.rollback();
+  await knex.migrate.latest();
 
-      return knex('orders').insert(orders);
-    })
-    .then(() => {
-      return knex('orders_food_junc').insert(food_items[0]);
-    })
-    .then(() => {
-      return knex('orders_food_junc').insert(food_items[1]);
-    });
+  const usersPromise = knex('users').insert(userData).returning('*');
+  const tablesPromise = knex('tables').insert(tableData).returning('*');
+  const foodsPromise = knex('food_items').insert(foodData).returning('*');
+
+  await Promise.all([usersPromise, tablesPromise, foodsPromise]);
+
+  const orders = orderData.map(({ table_id, description }) => ({
+    table_id,
+    description
+  }));
+
+  await knex('orders').insert(orders);
+
+  const foodPromises = [];
+
+  foodItems.forEach(food => {
+    foodPromises.push(knex('orders_food_junc').insert(food));
+  });
+
+  await Promise.all(foodPromises);
 };
