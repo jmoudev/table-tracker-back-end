@@ -317,6 +317,35 @@ describe('/api', () => {
               );
             });
         });
+
+        it('ERROR status 400 - responds with a bad request error message when a value is missing ', () => {
+          return request(app)
+            .post('/api/users')
+            .send({
+              email: 'waiterwalter@tabletracker.com',
+              first_name: 'wal',
+              last_name: 'ter'
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toEqual('Bad Request');
+            });
+        });
+
+        it('ERROR status 400 - responds with a bad request error message when role is not set to Staff or Admin ', () => {
+          return request(app)
+            .post('/api/users')
+            .send({
+              email: 'waiterwalter@tabletracker.com',
+              first_name: 'wal',
+              last_name: 'ter',
+              role: 'Waiter'
+            })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toEqual('Bad Request');
+            });
+        });
       });
     });
   });

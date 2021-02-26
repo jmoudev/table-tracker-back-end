@@ -4,6 +4,7 @@ const {
   addUser
 } = require('../models/users.models');
 
+// GET
 const getAllUsers = (req, res, next) => {
   fetchAllUsers()
     .then((users) => {
@@ -12,6 +13,7 @@ const getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
+// DELETE
 const deleteUserById = (req, res, next) => {
   const { user_id } = req.params;
   removeUserById(user_id)
@@ -19,6 +21,7 @@ const deleteUserById = (req, res, next) => {
     .catch(next);
 };
 
+// POST
 const postNewUser = (req, res, next) => {
   const { email, first_name, last_name, role } = req.body;
 
@@ -29,4 +32,5 @@ const postNewUser = (req, res, next) => {
     .catch(next);
 };
 
+// PATCH
 module.exports = { getAllUsers, deleteUserById, postNewUser };
