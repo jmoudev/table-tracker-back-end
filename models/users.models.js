@@ -1,4 +1,8 @@
 const connection = require('../db/connection');
+const {
+  handleBadRequest,
+  handleRouteNotFound
+} = require('../controllers/errors.controllers');
 
 const fetchAllUsers = () => {
   return connection('users')
@@ -22,4 +26,16 @@ const removeUserById = (user_id) => {
     });
 };
 
-module.exports = { fetchAllUsers, removeUserById };
+const addUser = (email, first_name, last_name, role) => {
+  const regex = /Staff|Admin/;
+  const validRole = regex.test(role);
+
+  if (!first_name | !last_name | !email | !validRole) return handleBadRequest();
+
+  return connection('users')
+    .insert({ email, first_name, last_name, role })
+    .returning('*')
+    .then(([user]) => user);
+};
+
+module.exports = { fetchAllUsers, removeUserById, addUser };
