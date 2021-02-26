@@ -27,7 +27,7 @@ const removeUserById = (user_id) => {
 };
 
 const addUser = (email, first_name, last_name, role) => {
-  const regex = /Staff|Admin/;
+  const regex = /Staff|Admin/i;
   const validRole = regex.test(role);
 
   if (!first_name | !last_name | !email | !validRole) return handleBadRequest();

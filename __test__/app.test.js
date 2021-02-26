@@ -63,24 +63,26 @@ describe('/api', () => {
             name: 'New York Cheesecake',
             price: 4.5,
             course: 'dessert',
-            is_active: true,
+            is_active: true
           });
         });
     });
     it('SUCCESS status 200 - changes active state of a food item', () => {
       return request(app)
         .patch('/api/food-items/1')
-        .send({ food_item_id: 1,
+        .send({
+          food_item_id: 1,
           name: 'Garlic Bread',
-          price: 3.00,
+          price: 3.0,
           course: 'starter',
-          is_active: false })
+          is_active: false
+        })
         .expect(200)
         .then(({ body }) => {
           expect(body.foodItems).toEqual({
             food_item_id: 1,
             name: 'Garlic Bread',
-            price: 3.00,
+            price: 3.0,
             course: 'starter',
             is_active: false
           });
@@ -293,7 +295,7 @@ describe('/api', () => {
                     email: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
-                    role: expect.stringMatching(/Staff|Admin/)
+                    role: expect.stringMatching(/Staff|Admin/i)
                   })
                 );
               });
@@ -333,7 +335,7 @@ describe('/api', () => {
                   email: expect.any(String),
                   first_name: expect.any(String),
                   last_name: expect.any(String),
-                  role: expect.stringMatching(/Staff|Admin/)
+                  role: expect.stringMatching(/Staff|Admin/i)
                 })
               );
             });
