@@ -8,7 +8,7 @@ const {
 exports.getFoodItems = (req, res, next) => {
   selectFoodItems().then(foodItems => {
     res.send({ foodItems });
-  }).catch((err) => {console.log(err)})
+  }).catch(next)
 };
 
 //POST
