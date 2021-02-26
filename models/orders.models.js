@@ -1,5 +1,8 @@
 const connection = require('../db/connection');
-const { handleBadRequest } = require('../controllers/errors.controllers');
+const {
+  handleRouteNotFound,
+  handleBadRequest
+} = require('../controllers/errors.controllers');
 
 exports.sendOrderByTableId = async (table_id, orderBody) => {
   const { description, food_items } = orderBody;
@@ -7,7 +10,6 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
   if (!food_items) {
     return handleBadRequest();
   }
-  console.log(food_items);
 
   const [orderWithoutFoodItems] = await connection('orders')
     .insert({ table_id, description })
@@ -16,10 +18,8 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
 
   await sendFoodItemsByOrderId(order_id, food_items);
 
-  const foodIds = await fetchOrderFoodsByOrderId(order_id);
   const orderWithFoodItems = { ...orderWithoutFoodItems };
-
-  orderWithFoodItems.food_items = foodIds;
+  orderWithFoodItems.food_items = food_items;
 
   return orderWithFoodItems;
 };
@@ -35,6 +35,8 @@ exports.updateOrderByTableId = async (
 ) => {
   const order_id = await fetchActiveOrderIdByTableId(table_id);
 
+  // if no order_id for table /  no table
+
   const orderStatus = {
     starters_ready,
     mains_ready,
@@ -44,13 +46,13 @@ exports.updateOrderByTableId = async (
   };
 
   for (status in orderStatus) {
-    if (typeof orderStatus[status] !== 'boolean') {
+    if (typeof orderStatus[status] === 'undefined') {
       delete orderStatus[status];
     }
   }
 
   if (Object.keys(orderStatus).length) {
-    updateOrderStatus(order_id, orderStatus);
+    await updateOrderStatus(order_id, orderStatus);
   }
 
   const orderWithoutFoodItems = await fetchOrderByOrderId(order_id);
@@ -60,8 +62,8 @@ exports.updateOrderByTableId = async (
   }
 
   const foodIds = await fetchOrderFoodsByOrderId(order_id);
-  const orderWithFoodItems = { ...orderWithoutFoodItems };
 
+  const orderWithFoodItems = { ...orderWithoutFoodItems };
   orderWithFoodItems.food_items = foodIds;
 
   return orderWithFoodItems;
@@ -72,11 +74,17 @@ const updateOrderStatus = async (order_id, orderStatus) => {
 };
 
 const fetchActiveOrderIdByTableId = async table_id => {
-  const [{ order_id }] = await connection('orders')
+  const [order] = await connection('orders')
     .select('*')
     .where({ table_id, is_active: true });
 
-  return order_id;
+  if (!order) {
+    return handleRouteNotFound();
+  } else {
+    const { order_id } = order;
+
+    return order_id;
+  }
 };
 
 const fetchOrderByOrderId = async order_id => {

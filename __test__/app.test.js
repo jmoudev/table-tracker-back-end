@@ -265,9 +265,51 @@ describe('/api', () => {
               );
             });
         });
-        it('ERROR - status 404 - table does not exist', () => {});
-        it('ERROR - status 404 - bad request on table_id', () => {});
-        it('ERROR - status 404 - bad request body incorrect type', () => {});
+        it('ERROR - status 404 - table does not exist', () => {
+          return request(app)
+            .patch('/api/tables/999/orders')
+            .send({})
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Not Found');
+            });
+        });
+        it('ERROR - status 404 - no active orders on table', () => {
+          return request(app)
+            .patch('/api/tables/3/orders')
+            .send({})
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Not Found');
+            });
+        });
+        it('ERROR - status 400 - bad request on table_id', () => {
+          return request(app)
+            .patch('/api/tables/not-an-id/orders')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+        it('ERROR - status 400 - bad request body incorrect type on course_ready or is_active', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({ is_active: 'not-a-bool' })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+        it('ERROR - status 404 - bad request body incorrect type on food_order_items', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({ add_foods: ['not-a-number'] })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
       });
       describe('POST order by table_id', () => {
         it('SUCCESS - status 201 - returns a new order', () => {
