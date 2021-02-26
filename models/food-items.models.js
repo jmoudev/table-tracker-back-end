@@ -4,10 +4,12 @@ const {
   handleRouteNotFound
 } = require('../controllers/errors.controllers');
 
+//GET
 exports.selectFoodItems = () => {
   return connection.select('*').from('food_items');
 };
 
+//POST
 exports.appendFoodItems = (name, price, course) => {
   return connection('food_items')
     .insert({
@@ -21,7 +23,8 @@ exports.appendFoodItems = (name, price, course) => {
     });
 };
 
-exports.amendFoodItemsById = (food_item_id, name, price, course) => {
+//PATCH
+exports.amendFoodItemsById = (food_item_id, name, price, course, is_active) => {
   if (!name | !price | !course) return handleBadRequest();
 
   return connection('food_items')
@@ -29,7 +32,8 @@ exports.amendFoodItemsById = (food_item_id, name, price, course) => {
     .update({
       name: name,
       price: price,
-      course: course
+      course: course,
+      is_active: is_active
     })
     .returning('*')
     .then(([foodItems]) => {
