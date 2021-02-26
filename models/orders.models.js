@@ -25,14 +25,40 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
   return orderWithFoodItems;
 };
 
-exports.updateOrderByTableId = async (table_id, { add_foods }) => {
-  const { order_id } = await getActiveOrderByTableId(table_id);
+exports.updateOrderByTableId = async (
+  table_id,
+  starters_ready,
+  mains_ready,
+  desserts_ready,
+  drinks_ready,
+  is_active,
+  add_foods
+) => {
+  const order_id = await getActiveOrderIdByTableId(table_id);
+
+  const orderStatus = {
+    starters_ready,
+    mains_ready,
+    desserts_ready,
+    drinks_ready,
+    is_active
+  };
+
+  for (status in orderStatus) {
+    if (typeof orderStatus[status] !== 'boolean') {
+      delete orderStatus[status];
+    }
+  }
+
+  if (Object.keys(orderStatus).length) {
+    updateOrderStatus(order_id, orderStatus);
+  }
+
+  const orderWithoutFoodItems = await getOrderByOrderId(order_id);
 
   if (add_foods) {
     await postFoodItemsByOrderId(order_id, add_foods);
   }
-  // if active order
-  const orderWithoutFoodItems = await getActiveOrderByTableId(table_id);
 
   const foodIds = await getOrderFoodsByOrderId(order_id);
   const orderWithFoodItems = { ...orderWithoutFoodItems };
@@ -42,10 +68,21 @@ exports.updateOrderByTableId = async (table_id, { add_foods }) => {
   return orderWithFoodItems;
 };
 
-const getActiveOrderByTableId = async table_id => {
-  const [order] = await connection('orders')
+const updateOrderStatus = async (order_id, orderStatus) => {
+  return connection('orders').update(orderStatus).where({ order_id });
+};
+
+// needs to be get active order id by table id
+const getActiveOrderIdByTableId = async table_id => {
+  const [{ order_id }] = await connection('orders')
     .select('*')
     .where({ table_id, is_active: true });
+
+  return order_id;
+};
+
+const getOrderByOrderId = async order_id => {
+  const [order] = await connection('orders').select('*').where({ order_id });
 
   return order;
 };

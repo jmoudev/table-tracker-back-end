@@ -16,9 +16,24 @@ exports.postOrderByTableId = (req, res, next) => {
 
 exports.patchOrderByTableId = (req, res, next) => {
   const { table_id } = req.params;
-  const { body } = req;
+  const {
+    starters_ready,
+    mains_ready,
+    desserts_ready,
+    drinks_ready,
+    is_active,
+    add_foods
+  } = req.body;
 
-  updateOrderByTableId(table_id, body)
+  updateOrderByTableId(
+    table_id,
+    starters_ready,
+    mains_ready,
+    desserts_ready,
+    drinks_ready,
+    is_active,
+    add_foods
+  )
     .then(order => {
       res.status(200).send({ order });
     })

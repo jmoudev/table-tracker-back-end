@@ -197,6 +197,59 @@ describe('/api', () => {
               );
             });
         });
+        it('SUCCESS - status 200 - return specified order with course_ready and is_active boolean value changed', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({
+              starters_ready: true,
+              mains_ready: true,
+              drinks_ready: true,
+              desserts_ready: true,
+              is_active: false
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 1,
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: true,
+                  mains_ready: true,
+                  desserts_ready: true,
+                  drinks_ready: true,
+                  is_active: false,
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
+        it('SUCCESS - status 200 - return specified order with some of course_ready and is_active boolean values changed', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({
+              starters_ready: true,
+              mains_ready: true
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 1,
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: true,
+                  mains_ready: true,
+                  desserts_ready: false,
+                  drinks_ready: false,
+                  is_active: true,
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
         it('SUCCESS - status 200 - return specified order with food-items added to order', () => {
           return request(app)
             .patch('/api/tables/1/orders')
@@ -212,7 +265,6 @@ describe('/api', () => {
               );
             });
         });
-        it('SUCCESS - status 200 - no information in request body does not update order', () => {});
         it('ERROR - status 404 - table does not exist', () => {});
         it('ERROR - status 404 - bad request on table_id', () => {});
         it('ERROR - status 404 - bad request body incorrect type', () => {});
