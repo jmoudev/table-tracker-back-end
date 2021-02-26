@@ -14,7 +14,7 @@ exports.sendOrderByTableId = (table_id, order) => {
     .then(([order]) => {
       const { order_id } = order;
 
-      const junc_pairs = food_items.map(food_item_id => {
+      const junc_pairs = food_items.map((food_item_id) => {
         return { order_id, food_item_id };
       });
 
@@ -27,4 +27,24 @@ exports.sendOrderByTableId = (table_id, order) => {
           return orderWithFoodItems;
         });
     });
+};
+
+exports.fetchAllOrders = async (is_active = true) => {
+  const ordersWithoutFoods = await connection('orders')
+    .select('*')
+    .where({ is_active });
+  const juncRows = await connection('orders_food_junc').select('*');
+  const ordersFoodsLookup = {};
+
+  juncRows.forEach(({ order_id, food_item_id }) => {
+    if (!ordersFoodsLookup.hasOwnProperty(order_id)) {
+      ordersFoodsLookup[order_id] = [];
+    }
+    ordersFoodsLookup[order_id].push(food_item_id);
+  });
+
+  return ordersWithoutFoods.map((order) => {
+    const food_items = ordersFoodsLookup[order.order_id];
+    return { ...order, food_items };
+  });
 };
