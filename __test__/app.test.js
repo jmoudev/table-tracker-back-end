@@ -130,11 +130,11 @@ describe('/api', () => {
     });
   });
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
-  describe.only('/api/orders', () => {
+  describe('/api/orders', () => {
     it('ERROR - status 405 - method not allowed', () => {});
 
-    describe('GET all orders', () => {
-      it('SUCCESS - status 200 - returns array of all orders', () => {
+    describe.only('GET all orders', () => {
+      it('SUCCESS - status 200 - returns array of all orders with is_active query defaulted to true', () => {
         return request(app)
           .get('/api/orders')
           .expect(200)
@@ -150,16 +150,44 @@ describe('/api', () => {
                   mains_ready: expect.any(Boolean),
                   desserts_ready: expect.any(Boolean),
                   drinks_ready: expect.any(Boolean),
-                  is_active: expect.any(Boolean),
+                  is_active: true,
                   created_at: expect.any(String),
                 })
               );
             });
           });
       });
-      // by table query
-      it('SUCCESS - status 200 - returns array of all orders with isActive query to filter active orders', () => {});
-      it('ERRROR - status 400 - returns bad request on isActive query', () => {});
+      it('SUCCESS - status 200 - returns array of all orders with isActive query to filter active orders', () => {
+        return request(app)
+          .get('/api/orders?is_active=false')
+          .expect(200)
+          .then(({ body }) => {
+            body.orders.forEach((order) => {
+              expect(order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: expect.any(Number),
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: expect.any(Boolean),
+                  mains_ready: expect.any(Boolean),
+                  desserts_ready: expect.any(Boolean),
+                  drinks_ready: expect.any(Boolean),
+                  is_active: false,
+                  created_at: expect.any(String),
+                })
+              );
+            });
+          });
+      });
+      it('ERRROR - status 400 - bad request on is_active query', () => {
+        return request(app)
+          .get('/api/orders?is_active=not-a-bool')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toEqual('Bad Request');
+          });
+      });
     });
   });
 
