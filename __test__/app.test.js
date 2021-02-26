@@ -197,7 +197,7 @@ describe('/api', () => {
               );
             });
         });
-        it.only('SUCCESS - status 200 - return specified order with food-items added to order', () => {
+        it('SUCCESS - status 200 - return specified order with food-items added to order', () => {
           return request(app)
             .patch('/api/tables/1/orders')
             .send({ add_foods: [6, 7, 8] })
