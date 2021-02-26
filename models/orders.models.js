@@ -7,17 +7,16 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
   if (!food_items) {
     return handleBadRequest();
   }
+  console.log(food_items);
 
   const [orderWithoutFoodItems] = await connection('orders')
     .insert({ table_id, description })
     .returning('*');
-
   const { order_id } = orderWithoutFoodItems;
 
   await sendFoodItemsByOrderId(order_id, food_items);
 
   const foodIds = await fetchOrderFoodsByOrderId(order_id);
-
   const orderWithFoodItems = { ...orderWithoutFoodItems };
 
   orderWithFoodItems.food_items = foodIds;
