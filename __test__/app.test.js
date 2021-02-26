@@ -370,6 +370,20 @@ describe('/api', () => {
             });
         });
       });
+
+      describe('PATCH', () => {
+        it('SUCCESS - Status 200 - responds with the edited user', () => {
+          return request(app)
+            .patch('/api/users/1')
+            .send({
+              email: 'chefcharlie@tabletracker.com',
+              first_name: 'char',
+              last_name: 'lie',
+              role: 'Staff'
+            })
+            .expect(200);
+        });
+      });
     });
   });
 });
