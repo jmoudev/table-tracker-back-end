@@ -4,6 +4,7 @@ exports.up = function (knex) {
     foodItemsTable.string('name').notNullable();
     foodItemsTable.float('price', 2).notNullable();
     foodItemsTable.string('course').notNullable();
+    foodItemsTable.boolean('is_active').defaultTo(true)
   });
 };
 
