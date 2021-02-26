@@ -70,19 +70,21 @@ describe('/api', () => {
     it('SUCCESS status 200 - changes active state of a food item', () => {
       return request(app)
         .patch('/api/food-items/1')
-        .send({ food_item_id: 1,
+        .send({
+          food_item_id: 1,
           name: 'Garlic Bread',
-          price: 3.00,
+          price: 3.0,
           course: 'starter',
-          is_active: false })
+          is_active: false,
+        })
         .expect(200)
         .then(({ body }) => {
           expect(body.foodItems).toEqual({
             food_item_id: 1,
             name: 'Garlic Bread',
-            price: 3.00,
+            price: 3.0,
             course: 'starter',
-            is_active: false
+            is_active: false,
           });
         });
     });
@@ -110,7 +112,7 @@ describe('/api', () => {
         .send({
           name: 'New York Cheesecake',
           price: 'four pounds fifty',
-          course: 'dessert'
+          course: 'dessert',
         })
         .expect(400)
         .then(({ body }) => {
@@ -162,7 +164,7 @@ describe('/api', () => {
                   expect.objectContaining({
                     table_id: expect.any(Number),
                     name: expect.any(String),
-                    is_active: expect.any(Boolean)
+                    is_active: expect.any(Boolean),
                   })
                 );
               });
@@ -177,7 +179,7 @@ describe('/api', () => {
               body.tables.forEach((table) => {
                 expect(table).toEqual(
                   expect.objectContaining({
-                    is_active: true
+                    is_active: true,
                   })
                 );
               });
@@ -338,7 +340,7 @@ describe('/api', () => {
             .post('/api/tables/3/orders')
             .send({
               food_items: [1, 2, 3, 4, 5, 6],
-              description: 'dairy allergy'
+              description: 'dairy allergy',
             })
             .expect(201)
             .then(({ body }) => {
@@ -353,7 +355,7 @@ describe('/api', () => {
                   desserts_ready: expect.any(Boolean),
                   drinks_ready: expect.any(Boolean),
                   is_active: expect.any(Boolean),
-                  created_at: expect.any(String)
+                  created_at: expect.any(String),
                 })
               );
             });
@@ -363,7 +365,7 @@ describe('/api', () => {
             .post('/api/tables/999/orders')
             .send({
               food_items: [1, 2, 3, 4, 5, 6],
-              description: 'dairy allergy'
+              description: 'dairy allergy',
             })
             .expect(404)
             .then(({ body }) => {
@@ -375,7 +377,7 @@ describe('/api', () => {
             .post('/api/tables/not-an-id/orders')
             .send({
               food_items: [1, 2, 3, 4, 5, 6],
-              description: 'dairy allergy'
+              description: 'dairy allergy',
             })
             .expect(400)
             .then(({ body }) => {
@@ -386,7 +388,7 @@ describe('/api', () => {
           return request(app)
             .post('/api/tables/1/orders')
             .send({
-              description: 'dairy allergy'
+              description: 'dairy allergy',
             })
             .expect(400)
             .then(({ body }) => {
@@ -398,7 +400,7 @@ describe('/api', () => {
             .post('/api/tables/1/orders')
             .send({
               food_items: ['invalid-food-id'],
-              description: 'dairy allergy'
+              description: 'dairy allergy',
             })
             .expect(400)
             .then(({ body }) => {
@@ -423,7 +425,7 @@ describe('/api', () => {
                     email: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
-                    role: expect.stringMatching(/Staff|Admin/)
+                    role: expect.stringMatching(/Staff|Admin/),
                   })
                 );
               });
@@ -454,7 +456,7 @@ describe('/api', () => {
               email: 'waiterwalter@tabletracker.com',
               first_name: 'wal',
               last_name: 'ter',
-              role: 'Staff'
+              role: 'Staff',
             })
             .then(({ body: { user } }) => {
               expect(user).toEqual(
@@ -463,7 +465,7 @@ describe('/api', () => {
                   email: expect.any(String),
                   first_name: expect.any(String),
                   last_name: expect.any(String),
-                  role: expect.stringMatching(/Staff|Admin/)
+                  role: expect.stringMatching(/Staff|Admin/),
                 })
               );
             });
@@ -475,7 +477,7 @@ describe('/api', () => {
             .send({
               email: 'waiterwalter@tabletracker.com',
               first_name: 'wal',
-              last_name: 'ter'
+              last_name: 'ter',
             })
             .expect(400)
             .then(({ body: { msg } }) => {
@@ -490,7 +492,7 @@ describe('/api', () => {
               email: 'waiterwalter@tabletracker.com',
               first_name: 'wal',
               last_name: 'ter',
-              role: 'Waiter'
+              role: 'Waiter',
             })
             .expect(400)
             .then(({ body: { msg } }) => {
