@@ -1,7 +1,8 @@
 const {
   fetchAllUsers,
   removeUserById,
-  addUser
+  addUser,
+  editUserById
 } = require('../models/users.models');
 
 // GET
@@ -33,4 +34,6 @@ const postNewUser = (req, res, next) => {
 };
 
 // PATCH
-module.exports = { getAllUsers, deleteUserById, postNewUser };
+const patchUserById = (req, res, next) => {};
+
+module.exports = { getAllUsers, deleteUserById, postNewUser, patchUserById };

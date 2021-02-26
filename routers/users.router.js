@@ -2,11 +2,12 @@ const usersRouter = require('express').Router();
 const {
   getAllUsers,
   deleteUserById,
-  postNewUser
+  postNewUser,
+  patchUserById
 } = require('../controllers/users.controllers');
 
 usersRouter.route('/').get(getAllUsers).post(postNewUser);
 
-usersRouter.route('/:user_id').delete(deleteUserById);
+usersRouter.route('/:user_id').patch(patchUserById).delete(deleteUserById);
 
 module.exports = usersRouter;

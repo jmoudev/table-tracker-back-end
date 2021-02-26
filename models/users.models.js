@@ -38,4 +38,6 @@ const addUser = (email, first_name, last_name, role) => {
     .then(([user]) => user);
 };
 
-module.exports = { fetchAllUsers, removeUserById, addUser };
+const editUserById = () => {};
+
+module.exports = { fetchAllUsers, removeUserById, addUser, editUserById };
