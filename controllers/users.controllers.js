@@ -34,6 +34,15 @@ const postNewUser = (req, res, next) => {
 };
 
 // PATCH
-const patchUserById = (req, res, next) => {};
+const patchUserById = (req, res, next) => {
+  const { user_id } = req.params;
+  const { email, first_name, last_name, role } = req.body;
+
+  // editUserById(user_id, email, first_name, last_name, role)
+  //   .then((user) => {
+  //   })
+  //   .catch(next);
+  return res.sendStatus(200);
+};
 
 module.exports = { getAllUsers, deleteUserById, postNewUser, patchUserById };
