@@ -229,11 +229,141 @@ describe('/api', () => {
 
     describe('/api/tables/:table_id/orders', () => {
       describe('PATCH order by table_id', () => {
-        it('SUCCESS - status 200 - return specified order with updated food-items', () => {});
-        it('SUCCESS - status 200 - no information in request body does not update order', () => {});
-        it('ERROR - status 404 - table does not exist', () => {});
-        it('ERROR - status 404 - bad request on table_id', () => {});
-        it('ERROR - status 404 - bad request body incorrect type', () => {});
+        it('SUCCESS - status 200 - return specified active table order when empty body provided', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({})
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 1,
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: expect.any(Boolean),
+                  mains_ready: expect.any(Boolean),
+                  desserts_ready: expect.any(Boolean),
+                  drinks_ready: expect.any(Boolean),
+                  is_active: true,
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
+        it('SUCCESS - status 200 - return specified order with course_ready and is_active boolean value changed', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({
+              starters_ready: true,
+              mains_ready: true,
+              drinks_ready: true,
+              desserts_ready: true,
+              is_active: false
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 1,
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: true,
+                  mains_ready: true,
+                  desserts_ready: true,
+                  drinks_ready: true,
+                  is_active: false,
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
+        it('SUCCESS - status 200 - return specified order with some of course_ready and is_active boolean values changed', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({
+              starters_ready: true,
+              mains_ready: true
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  order_id: expect.any(Number),
+                  table_id: 1,
+                  description: expect.any(String),
+                  food_items: expect.any(Array),
+                  starters_ready: true,
+                  mains_ready: true,
+                  desserts_ready: false,
+                  drinks_ready: false,
+                  is_active: true,
+                  created_at: expect.any(String)
+                })
+              );
+            });
+        });
+        it('SUCCESS - status 200 - return specified order with food-items added to order', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({ add_foods: [6, 7, 8] })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.order).toEqual(
+                expect.objectContaining({
+                  table_id: 1,
+                  food_items: [1, 2, 3, 4, 5, 6, 7, 8],
+                  is_active: true
+                })
+              );
+            });
+        });
+        it('ERROR - status 404 - table does not exist', () => {
+          return request(app)
+            .patch('/api/tables/999/orders')
+            .send({})
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Not Found');
+            });
+        });
+        it('ERROR - status 404 - no active orders on table', () => {
+          return request(app)
+            .patch('/api/tables/3/orders')
+            .send({})
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Not Found');
+            });
+        });
+        it('ERROR - status 400 - bad request on table_id', () => {
+          return request(app)
+            .patch('/api/tables/not-an-id/orders')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+        it('ERROR - status 400 - bad request body incorrect type on course_ready or is_active', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({ is_active: 'not-a-bool' })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+        it('ERROR - status 404 - bad request body incorrect type on food_order_items', () => {
+          return request(app)
+            .patch('/api/tables/1/orders')
+            .send({ add_foods: ['not-a-number'] })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
       });
       describe('POST order by table_id', () => {
         it('SUCCESS - status 201 - returns a new order', () => {
@@ -250,7 +380,7 @@ describe('/api', () => {
                   order_id: expect.any(Number),
                   table_id: 3,
                   description: 'dairy allergy',
-                  food_items: expect.any(Array),
+                  food_items: [1, 2, 3, 4, 5, 6],
                   starters_ready: expect.any(Boolean),
                   mains_ready: expect.any(Boolean),
                   desserts_ready: expect.any(Boolean),
