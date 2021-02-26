@@ -29,10 +29,13 @@ exports.seed = knex => {
       return knex('food_items').insert(foodData).returning('*');
     })
     .then(() => {
-      const orders = orderData.map(({ table_id, description }) => ({
-        table_id,
-        description
-      }));
+      const orders = orderData.map(({ table_id, description, is_active }) => {
+        const order = { table_id, description };
+
+        if (typeof is_active === 'boolean') order.is_active = is_active;
+
+        return order;
+      });
 
       return knex('orders').insert(orders);
     })
