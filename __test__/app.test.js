@@ -50,6 +50,7 @@ describe('/api', () => {
         });
     });
   });
+
   describe('PATCH /api/food-items/:food_item_id', () => {
     it('SUCCESS status 201 - changes a value of a food item', () => {
       return request(app)
@@ -61,7 +62,27 @@ describe('/api', () => {
             food_item_id: 1,
             name: 'New York Cheesecake',
             price: 4.5,
-            course: 'dessert'
+            course: 'dessert',
+            is_active: true,
+          });
+        });
+    });
+    it('SUCCESS status 201 - changes active state of a food item', () => {
+      return request(app)
+        .patch('/api/food-items/1')
+        .send({ food_item_id: 1,
+          name: 'Garlic Bread',
+          price: 3.00,
+          course: 'starter',
+          is_active: false })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.foodItems).toEqual({
+            food_item_id: 1,
+            name: 'Garlic Bread',
+            price: 3.00,
+            course: 'starter',
+            is_active: false
           });
         });
     });
