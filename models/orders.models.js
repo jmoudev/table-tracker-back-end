@@ -14,9 +14,9 @@ exports.sendOrderByTableId = async (table_id, orderBody) => {
 
   const { order_id } = orderWithoutFoodItems;
 
-  await postFoodItemsByOrderId(order_id, food_items);
+  await sendFoodItemsByOrderId(order_id, food_items);
 
-  const foodIds = await getOrderFoodsByOrderId(order_id);
+  const foodIds = await fetchOrderFoodsByOrderId(order_id);
 
   const orderWithFoodItems = { ...orderWithoutFoodItems };
 
@@ -34,7 +34,7 @@ exports.updateOrderByTableId = async (
   is_active,
   add_foods
 ) => {
-  const order_id = await getActiveOrderIdByTableId(table_id);
+  const order_id = await fetchActiveOrderIdByTableId(table_id);
 
   const orderStatus = {
     starters_ready,
@@ -54,13 +54,13 @@ exports.updateOrderByTableId = async (
     updateOrderStatus(order_id, orderStatus);
   }
 
-  const orderWithoutFoodItems = await getOrderByOrderId(order_id);
+  const orderWithoutFoodItems = await fetchOrderByOrderId(order_id);
 
   if (add_foods) {
-    await postFoodItemsByOrderId(order_id, add_foods);
+    await sendFoodItemsByOrderId(order_id, add_foods);
   }
 
-  const foodIds = await getOrderFoodsByOrderId(order_id);
+  const foodIds = await fetchOrderFoodsByOrderId(order_id);
   const orderWithFoodItems = { ...orderWithoutFoodItems };
 
   orderWithFoodItems.food_items = foodIds;
@@ -72,8 +72,7 @@ const updateOrderStatus = async (order_id, orderStatus) => {
   return connection('orders').update(orderStatus).where({ order_id });
 };
 
-// needs to be get active order id by table id
-const getActiveOrderIdByTableId = async table_id => {
+const fetchActiveOrderIdByTableId = async table_id => {
   const [{ order_id }] = await connection('orders')
     .select('*')
     .where({ table_id, is_active: true });
@@ -81,13 +80,13 @@ const getActiveOrderIdByTableId = async table_id => {
   return order_id;
 };
 
-const getOrderByOrderId = async order_id => {
+const fetchOrderByOrderId = async order_id => {
   const [order] = await connection('orders').select('*').where({ order_id });
 
   return order;
 };
 
-const getOrderFoodsByOrderId = async order_id => {
+const fetchOrderFoodsByOrderId = async order_id => {
   const juncRows = await connection('orders_food_junc')
     .select('*')
     .where({ order_id });
@@ -97,7 +96,7 @@ const getOrderFoodsByOrderId = async order_id => {
   return foodIds;
 };
 
-const postFoodItemsByOrderId = (order_id, foodsArr) => {
+const sendFoodItemsByOrderId = (order_id, foodsArr) => {
   const juncPairsArr = foodsArr.map(food_item_id => {
     return { order_id, food_item_id };
   });
