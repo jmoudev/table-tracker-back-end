@@ -1,8 +1,6 @@
 const ordersRouter = require('express').Router();
+const { getAllOrders } = require('../controllers/orders.controllers');
 
-ordersRouter.route('/').get((req, res, next) => {
-  console.log('hello world!!!');
-  res.sendStatus(200);
-});
+ordersRouter.route('/').get(getAllOrders);
 
 module.exports = ordersRouter;

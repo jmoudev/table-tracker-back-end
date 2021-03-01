@@ -2,15 +2,19 @@ const { userData, foodData, tableData, orderData } = require('../data/index');
 
 exports.seed = async knex => {
   const foodItems = orderData.map(({ food_items }, index) => {
+
     const order_id = index + 1;
     const orderFoods = [];
 
+
     food_items.forEach(food_item_id => {
       orderFoods.push({ order_id, food_item_id });
+
     });
 
     return orderFoods;
   });
+
 
   await knex.migrate.rollback();
   await knex.migrate.latest();
