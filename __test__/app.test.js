@@ -62,7 +62,7 @@ describe('/api', () => {
             name: 'New York Cheesecake',
             price: 4.5,
             course: 'dessert',
-            is_active: true,
+            is_active: true
           });
         });
     });
@@ -74,7 +74,7 @@ describe('/api', () => {
           name: 'Garlic Bread',
           price: 3.0,
           course: 'starter',
-          is_active: false,
+          is_active: false
         })
         .expect(200)
         .then(({ body }) => {
@@ -243,7 +243,7 @@ describe('/api', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.tables).toHaveLength(8);
-              body.tables.forEach((table) => {
+              body.tables.forEach(table => {
                 expect(table).toEqual(
                   expect.objectContaining({
                     table_id: expect.any(Number),
@@ -260,7 +260,7 @@ describe('/api', () => {
             .expect(200)
             .then(({ body }) => {
               expect(body.tables).toHaveLength(1);
-              body.tables.forEach((table) => {
+              body.tables.forEach(table => {
                 expect(table).toEqual(
                   expect.objectContaining({
                     is_active: true,
@@ -502,7 +502,7 @@ describe('/api', () => {
             .get('/api/users')
             .expect(200)
             .then(({ body: { users } }) => {
-              users.forEach((user) => {
+              users.forEach(user => {
                 expect(user).toEqual(
                   expect.objectContaining({
                     user_id: expect.any(Number),
