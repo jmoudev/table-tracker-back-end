@@ -1,6 +1,7 @@
 const {
   sendOrderByTableId,
-  updateOrderByTableId
+  fetchAllOrders,
+  updateOrderByTableId,
 } = require('../models/orders.models');
 
 exports.postOrderByTableId = (req, res, next) => {
@@ -8,8 +9,18 @@ exports.postOrderByTableId = (req, res, next) => {
   const order = req.body;
 
   sendOrderByTableId(table_id, order)
-    .then(order => {
+    .then((order) => {
       res.status(201).send({ order });
+    })
+    .catch(next);
+};
+
+exports.getAllOrders = (req, res, next) => {
+  const { is_active } = req.query;
+  fetchAllOrders(is_active)
+    .then((orders) => {
+      console.log(orders);
+      res.status(200).send({ orders });
     })
     .catch(next);
 };
@@ -22,7 +33,7 @@ exports.patchOrderByTableId = (req, res, next) => {
     desserts_ready,
     drinks_ready,
     is_active,
-    add_foods
+    add_foods,
   } = req.body;
 
   updateOrderByTableId(
@@ -34,7 +45,7 @@ exports.patchOrderByTableId = (req, res, next) => {
     is_active,
     add_foods
   )
-    .then(order => {
+    .then((order) => {
       res.status(200).send({ order });
     })
     .catch(next);

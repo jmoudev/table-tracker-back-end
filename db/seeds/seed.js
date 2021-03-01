@@ -1,13 +1,13 @@
 const { userData, foodData, tableData, orderData } = require('../data/index');
 
-exports.seed = knex => {
+exports.seed = (knex) => {
   const food_items = orderData.map(({ food_items }, index) => {
     // food items array per map
     // need to return
     const order_id = index + 1;
     const foodItemsWithOrder = [];
 
-    food_items.forEach(food_item_id => {
+    food_items.forEach((food_item_id) => {
       foodItemsWithOrder.push({ order_id, food_item_id });
     });
 
@@ -44,5 +44,8 @@ exports.seed = knex => {
     })
     .then(() => {
       return knex('orders_food_junc').insert(food_items[1]);
+    })
+    .then(() => {
+      return knex('orders_food_junc').insert(food_items[2]);
     });
 };
