@@ -19,7 +19,6 @@ exports.getAllOrders = (req, res, next) => {
   const { is_active } = req.query;
   fetchAllOrders(is_active)
     .then((orders) => {
-      console.log(orders);
       res.status(200).send({ orders });
     })
     .catch(next);
