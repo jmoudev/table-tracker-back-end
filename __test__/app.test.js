@@ -226,15 +226,6 @@ describe('/api', () => {
 
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/tables', () => {
-    // it('ERROR - status 405 - method not allowed', () => {
-    //   return request(app)
-    //     .put('/api/tables')
-    //     .expect(405)
-    //     .then(({ body }) => {
-    //       expect(body.msg).toBe('Method Not Allowed');
-    //     });
-    // });
-
     describe('/api/tables', () => {
       describe('GET all tables', () => {
         it('SUCCESS - status 200 - returns all tables', () => {
@@ -248,33 +239,25 @@ describe('/api', () => {
                   expect.objectContaining({
                     table_id: expect.any(Number),
                     name: expect.any(String),
-                    is_active: expect.any(Boolean),
+                    status: expect.stringMatching(/default|served|waiting-food|active/),
                   })
                 );
               });
             });
         });
-        it('SUCCESS - status 200 - returns array of tables with is_active query filtering based on whether the table is currently active', () => {
+        it('SUCCESS - status 200 - returns array of tables with status query filtering based on whether the table status', () => {
           return request(app)
-            .get('/api/tables?is_active=true')
+            .get('/api/tables?status=default')
             .expect(200)
             .then(({ body }) => {
-              expect(body.tables).toHaveLength(1);
+              expect(body.tables).toHaveLength(2);
               body.tables.forEach(table => {
                 expect(table).toEqual(
                   expect.objectContaining({
-                    is_active: true,
+                    status: "default",
                   })
                 );
               });
-            });
-        });
-        it('ERROR - status 400 - bad request on is_active query', () => {
-          return request(app)
-            .get('/api/tables?is_active=not-a-query')
-            .expect(400)
-            .then(({ body }) => {
-              expect(body.msg).toBe('Bad Request');
             });
         });
       });

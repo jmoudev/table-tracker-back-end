@@ -1,34 +1,34 @@
 module.exports = [
   {
     name: 'Table 1',
-    is_active: 'true'
+    status: 'default'
   },
   {
     name: 'Table 2',
-    is_active: 'false'
+    status: 'default'
   },
   {
     name: 'Table 3',
-    is_active: 'false'
+    status: 'active'
   },
   {
     name: 'Table 4',
-    is_active: 'false'
+    status: 'active'
   },
   {
     name: 'Table 5',
-    is_active: 'false'
+    status: 'served'
   },
   {
     name: 'Table 6',
-    is_active: 'false'
+    status: 'served'
   },
   {
     name: 'Table 7',
-    is_active: 'false'
+    status: 'waiting-food'
   },
   {
     name: 'Table 8',
-    is_active: 'false'
+    status: 'waiting-food'
   }
 ];

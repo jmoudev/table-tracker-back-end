@@ -2,7 +2,7 @@ exports.up = function (knex) {
   return knex.schema.createTable('tables', (tableTable) => {
     tableTable.increments('table_id').primary();
     tableTable.string('name').notNullable();
-    tableTable.boolean('is_active').notNullable();
+    tableTable.string('status').defaultTo("default");
   });
 };
 
