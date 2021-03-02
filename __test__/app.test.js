@@ -166,7 +166,7 @@ describe('/api', () => {
   describe('/api/orders', () => {
     it('ERROR - status 405 - method not allowed', () => {});
 
-    describe.only('GET all orders', () => {
+    describe('GET all orders', () => {
       it('SUCCESS - status 200 - returns array of all orders with is_active query defaulted to true', () => {
         return request(app)
           .get('/api/orders')
