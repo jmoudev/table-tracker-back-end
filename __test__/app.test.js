@@ -83,7 +83,7 @@ describe('/api', () => {
             name: 'Garlic Bread',
             price: 3.0,
             course: 'starter',
-            is_active: false,
+            is_active: false
           });
         });
     });
@@ -111,7 +111,7 @@ describe('/api', () => {
         .send({
           name: 'New York Cheesecake',
           price: 'four pounds fifty',
-          course: 'dessert',
+          course: 'dessert'
         })
         .expect(400)
         .then(({ body }) => {
@@ -140,51 +140,59 @@ describe('/api', () => {
             name: 'Garlic Bread',
             price: 3,
             course: 'starter',
-            is_active: true,
+            is_active: true
           });
         });
     });
-    it('ERROR status 400 - when food_item_id is not a number', () => { 
+    it('ERROR status 400 - when food_item_id is not a number', () => {
       return request(app)
         .get('/api/food-items/not-a-number')
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toEqual('Bad Request');
-        })
-     });
-    it('ERROR status 404 - when food_item_id is not on the db yet', () => { 
+        });
+    });
+    it('ERROR status 404 - when food_item_id is not on the db yet', () => {
       return request(app)
         .get('/api/food-items/999')
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toEqual('Not Found');
-        })
-     });
-  })
+        });
+    });
+  });
 
   //Joe BRANCH OUT FOR EACH REQUEST!! DON'T WORK ON MASTER
   describe('/api/orders', () => {
     it('ERROR - status 405 - method not allowed', () => {});
 
-    describe('GET all orders', () => {
+    describe.only('GET all orders', () => {
       it('SUCCESS - status 200 - returns array of all orders with is_active query defaulted to true', () => {
         return request(app)
           .get('/api/orders')
           .expect(200)
           .then(({ body }) => {
-            body.orders.forEach((order) => {
+            body.orders.forEach(order => {
               expect(order).toEqual(
                 expect.objectContaining({
                   order_id: expect.any(Number),
                   table_id: expect.any(Number),
                   description: expect.any(String),
-                  food_items: expect.any(Array),
+                  food_items: expect.arrayContaining([
+                    expect.objectContaining({
+                      food_item_id: expect.any(Number),
+                      name: expect.any(String),
+                      price: expect.any(Number),
+                      course: expect.any(String),
+                      is_active: expect.any(Boolean)
+                    })
+                  ]),
                   starters_ready: expect.any(Boolean),
                   mains_ready: expect.any(Boolean),
                   desserts_ready: expect.any(Boolean),
                   drinks_ready: expect.any(Boolean),
                   is_active: true,
-                  created_at: expect.any(String),
+                  created_at: expect.any(String)
                 })
               );
             });
@@ -195,7 +203,7 @@ describe('/api', () => {
           .get('/api/orders?is_active=false')
           .expect(200)
           .then(({ body }) => {
-            body.orders.forEach((order) => {
+            body.orders.forEach(order => {
               expect(order).toEqual(
                 expect.objectContaining({
                   order_id: expect.any(Number),
@@ -207,7 +215,7 @@ describe('/api', () => {
                   desserts_ready: expect.any(Boolean),
                   drinks_ready: expect.any(Boolean),
                   is_active: false,
-                  created_at: expect.any(String),
+                  created_at: expect.any(String)
                 })
               );
             });
@@ -239,7 +247,9 @@ describe('/api', () => {
                   expect.objectContaining({
                     table_id: expect.any(Number),
                     name: expect.any(String),
-                    status: expect.stringMatching(/default|served|waiting-food|active/),
+                    status: expect.stringMatching(
+                      /default|served|waiting-food|active/
+                    )
                   })
                 );
               });
@@ -254,7 +264,7 @@ describe('/api', () => {
               body.tables.forEach(table => {
                 expect(table).toEqual(
                   expect.objectContaining({
-                    status: "default",
+                    status: 'default'
                   })
                 );
               });
@@ -282,7 +292,7 @@ describe('/api', () => {
                   desserts_ready: expect.any(Boolean),
                   drinks_ready: expect.any(Boolean),
                   is_active: true,
-                  created_at: expect.any(String),
+                  created_at: expect.any(String)
                 })
               );
             });
@@ -295,7 +305,7 @@ describe('/api', () => {
               mains_ready: true,
               drinks_ready: true,
               desserts_ready: true,
-              is_active: false,
+              is_active: false
             })
             .expect(200)
             .then(({ body }) => {
@@ -310,7 +320,7 @@ describe('/api', () => {
                   desserts_ready: true,
                   drinks_ready: true,
                   is_active: false,
-                  created_at: expect.any(String),
+                  created_at: expect.any(String)
                 })
               );
             });
@@ -320,7 +330,7 @@ describe('/api', () => {
             .patch('/api/tables/1/orders')
             .send({
               starters_ready: true,
-              mains_ready: true,
+              mains_ready: true
             })
             .expect(200)
             .then(({ body }) => {
@@ -335,7 +345,7 @@ describe('/api', () => {
                   desserts_ready: false,
                   drinks_ready: false,
                   is_active: true,
-                  created_at: expect.any(String),
+                  created_at: expect.any(String)
                 })
               );
             });
@@ -350,7 +360,7 @@ describe('/api', () => {
                 expect.objectContaining({
                   table_id: 1,
                   food_items: [1, 2, 3, 4, 5, 6, 7, 8],
-                  is_active: true,
+                  is_active: true
                 })
               );
             });
@@ -407,7 +417,7 @@ describe('/api', () => {
             .post('/api/tables/3/orders')
             .send({
               food_items: [1, 2, 3, 4, 5, 6],
-              description: 'dairy allergy',
+              description: 'dairy allergy'
             })
             .expect(201)
             .then(({ body }) => {
@@ -422,7 +432,7 @@ describe('/api', () => {
                   desserts_ready: expect.any(Boolean),
                   drinks_ready: expect.any(Boolean),
                   is_active: expect.any(Boolean),
-                  created_at: expect.any(String),
+                  created_at: expect.any(String)
                 })
               );
             });
@@ -432,7 +442,7 @@ describe('/api', () => {
             .post('/api/tables/999/orders')
             .send({
               food_items: [1, 2, 3, 4, 5, 6],
-              description: 'dairy allergy',
+              description: 'dairy allergy'
             })
             .expect(404)
             .then(({ body }) => {
@@ -444,7 +454,7 @@ describe('/api', () => {
             .post('/api/tables/not-an-id/orders')
             .send({
               food_items: [1, 2, 3, 4, 5, 6],
-              description: 'dairy allergy',
+              description: 'dairy allergy'
             })
             .expect(400)
             .then(({ body }) => {
@@ -455,7 +465,7 @@ describe('/api', () => {
           return request(app)
             .post('/api/tables/1/orders')
             .send({
-              description: 'dairy allergy',
+              description: 'dairy allergy'
             })
             .expect(400)
             .then(({ body }) => {
@@ -467,7 +477,7 @@ describe('/api', () => {
             .post('/api/tables/1/orders')
             .send({
               food_items: ['invalid-food-id'],
-              description: 'dairy allergy',
+              description: 'dairy allergy'
             })
             .expect(400)
             .then(({ body }) => {
@@ -492,7 +502,7 @@ describe('/api', () => {
                     email: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
-                    role: expect.stringMatching(/Staff|Admin/),
+                    role: expect.stringMatching(/Staff|Admin/)
                   })
                 );
               });
@@ -523,7 +533,7 @@ describe('/api', () => {
               email: 'waiterwalter@tabletracker.com',
               first_name: 'wal',
               last_name: 'ter',
-              role: 'Staff',
+              role: 'Staff'
             })
             .then(({ body: { user } }) => {
               expect(user).toEqual(
@@ -532,7 +542,7 @@ describe('/api', () => {
                   email: expect.any(String),
                   first_name: expect.any(String),
                   last_name: expect.any(String),
-                  role: expect.stringMatching(/Staff|Admin/),
+                  role: expect.stringMatching(/Staff|Admin/)
                 })
               );
             });
@@ -544,7 +554,7 @@ describe('/api', () => {
             .send({
               email: 'waiterwalter@tabletracker.com',
               first_name: 'wal',
-              last_name: 'ter',
+              last_name: 'ter'
             })
             .expect(400)
             .then(({ body: { msg } }) => {
@@ -559,7 +569,7 @@ describe('/api', () => {
               email: 'waiterwalter@tabletracker.com',
               first_name: 'wal',
               last_name: 'ter',
-              role: 'Waiter',
+              role: 'Waiter'
             })
             .expect(400)
             .then(({ body: { msg } }) => {
