@@ -1,8 +1,9 @@
 const connection = require('../db/connection');
 const {
   handleRouteNotFound,
-  handleBadRequest,
+  handleBadRequest
 } = require('../controllers/errors.controllers');
+const { selectFoodItems } = require('./food-items.models');
 
 exports.sendOrderByTableId = async (table_id, orderBody) => {
   const { description, food_items } = orderBody;
@@ -35,14 +36,12 @@ exports.updateOrderByTableId = async (
 ) => {
   const order_id = await fetchActiveOrderIdByTableId(table_id);
 
-  // if no order_id for table /  no table
-
   const orderStatus = {
     starters_ready,
     mains_ready,
     desserts_ready,
     drinks_ready,
-    is_active,
+    is_active
   };
 
   for (status in orderStatus) {
@@ -73,7 +72,7 @@ const updateOrderStatus = async (order_id, orderStatus) => {
   return connection('orders').update(orderStatus).where({ order_id });
 };
 
-const fetchActiveOrderIdByTableId = async (table_id) => {
+const fetchActiveOrderIdByTableId = async table_id => {
   const [order] = await connection('orders')
     .select('*')
     .where({ table_id, is_active: true });
@@ -87,24 +86,24 @@ const fetchActiveOrderIdByTableId = async (table_id) => {
   }
 };
 
-const fetchOrderByOrderId = async (order_id) => {
+const fetchOrderByOrderId = async order_id => {
   const [order] = await connection('orders').select('*').where({ order_id });
 
   return order;
 };
 
-const fetchOrderFoodsByOrderId = async (order_id) => {
+const fetchOrderFoodsByOrderId = async order_id => {
   const juncRows = await connection('orders_food_junc')
     .select('*')
     .where({ order_id });
 
-  const foodIds = juncRows.map((row) => row.food_item_id);
+  const foodIds = juncRows.map(row => row.food_item_id);
 
   return foodIds;
 };
 
 const sendFoodItemsByOrderId = (order_id, foodsArr) => {
-  const juncPairsArr = foodsArr.map((food_item_id) => {
+  const juncPairsArr = foodsArr.map(food_item_id => {
     return { order_id, food_item_id };
   });
 
@@ -125,26 +124,18 @@ exports.fetchAllOrders = async (is_active = true) => {
     ordersFoodsLookup[order_id].push(food_item_id);
   });
 
-  return ordersWithoutFoods.map((order) => {
-    const food_items = ordersFoodsLookup[order.order_id];
+  const foodInfo = await selectFoodItems();
+
+  return ordersWithoutFoods.map(order => {
+    const foodIds = ordersFoodsLookup[order.order_id];
+
+    const food_items = foodIds.map(id => {
+      const [filterFood] = foodInfo.filter(food => {
+        return food.food_item_id === id;
+      });
+      return filterFood;
+    });
+
     return { ...order, food_items };
   });
 };
-
-// .returning('*')
-// .then(([order]) => {
-//   const { order_id } = order;
-
-//   const junc_pairs = food_items.map((food_item_id) => {
-//     return { order_id, food_item_id };
-//   });
-
-//   return connection('orders_food_junc')
-//     .insert(junc_pairs)
-//     .then(() => {
-//       const orderWithFoodItems = { ...order };
-//       orderWithFoodItems.food_items = food_items;
-
-//       return orderWithFoodItems;
-//     });
-// });
