@@ -43,14 +43,14 @@ exports.amendFoodItemsById = (food_item_id, name, price, course, is_active) => {
 };
 
 //GET BYID
-exports.selectFoodItemsById = (food_item_id) => {
+exports.selectFoodItemsById = food_item_id => {
   return connection
-  .select("*")
-  .from('food_items')
-  .where({ food_item_id })
-  .returning("*")
-  .then(( [ foodItem ] ) => {
-    if (!foodItem) return handleRouteNotFound();
-    else return  { foodItem }
-  })
-}
+    .select('*')
+    .from('food_items')
+    .where({ food_item_id })
+    .returning('*')
+    .then(([foodItem]) => {
+      if (!foodItem) return handleRouteNotFound();
+      else return { foodItem };
+    });
+};

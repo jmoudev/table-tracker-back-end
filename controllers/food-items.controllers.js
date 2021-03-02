@@ -2,14 +2,16 @@ const {
   selectFoodItems,
   appendFoodItems,
   amendFoodItemsById,
-  selectFoodItemsById,
+  selectFoodItemsById
 } = require('../models/food-items.models');
 
 //GET
 exports.getFoodItems = (req, res, next) => {
-  selectFoodItems().then(foodItems => {
-    res.send({ foodItems });
-  }).catch(next)
+  selectFoodItems()
+    .then(foodItems => {
+      res.send({ foodItems });
+    })
+    .catch(next);
 };
 
 //POST
@@ -37,8 +39,8 @@ exports.updateFoodItemsById = (req, res, next) => {
 exports.getFoodItemsById = (req, res, next) => {
   const { food_item_id } = req.params;
   selectFoodItemsById(food_item_id)
-  .then( foodItem => {
-    res.status(200).send(foodItem);
-  })
-  .catch(next);
+    .then(foodItem => {
+      res.status(200).send(foodItem);
+    })
+    .catch(next);
 };

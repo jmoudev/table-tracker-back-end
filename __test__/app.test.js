@@ -178,7 +178,15 @@ describe('/api', () => {
                   order_id: expect.any(Number),
                   table_id: expect.any(Number),
                   description: expect.any(String),
-                  food_items: expect.any(Array),
+                  food_items: expect.arrayContaining([
+                    expect.objectContaining({
+                      food_item_id: expect.any(Number),
+                      name: expect.any(String),
+                      price: expect.any(Number),
+                      course: expect.any(String),
+                      is_active: expect.any(Boolean)
+                    })
+                  ]),
                   starters_ready: expect.any(Boolean),
                   mains_ready: expect.any(Boolean),
                   desserts_ready: expect.any(Boolean),
