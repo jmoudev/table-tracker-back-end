@@ -17,8 +17,9 @@ exports.patchTableByTableId = (req, res, next) => {
   const { table_id } = req.params;
   const { status } = req.body;
 
-  updateTableByTableId(table_id, status).then(table => {
-    res.status(200).send({ table });
-    console.log({ table });
-  });
+  updateTableByTableId(table_id, status)
+    .then(table => {
+      res.status(200).send({ table });
+    })
+    .catch(next);
 };
