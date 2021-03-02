@@ -272,6 +272,69 @@ describe('/api', () => {
         });
       });
     });
+    describe('/api/tables/:table_id', () => {
+      describe.only('PATCH table by table_id', () => {
+        it('SUCCESS - status 200 - return table when empty body provided', () => {
+          return request(app)
+            .patch('/api/tables/1')
+            .send({})
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.table).toEqual(
+                expect.objectContaining({
+                  table_id: 1,
+                  name: expect.any(String),
+                  status: expect.stringMatching(
+                    /default|served|waiting-food|active/
+                  )
+                })
+              );
+            });
+        });
+        it('SUCCESS - status 200 - return table with amended status property when provided in body', () => {
+          return request(app)
+            .patch('/api/tables/1')
+            .send({ status: 'active' })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.table).toEqual(
+                expect.objectContaining({
+                  table_id: 1,
+                  name: expect.any(String),
+                  status: 'active'
+                })
+              );
+            });
+        });
+        it('ERROR - status 404 - table_id not found', () => {
+          return request(app)
+            .patch('/api/tables/999')
+            .send({})
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Not Found');
+            });
+        });
+        it('ERROR - status 400 - bad request on table_id', () => {
+          return request(app)
+            .patch('/api/tables/not-an-id')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+        it('ERROR - status 400 - bad request incorrect status in body', () => {
+          return request(app)
+            .patch('/api/tables/not-an-id')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+      });
+    });
 
     describe('/api/tables/:table_id/orders', () => {
       describe('PATCH order by table_id', () => {

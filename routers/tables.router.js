@@ -1,4 +1,7 @@
-const { getAllTables } = require('../controllers/tables.controllers');
+const {
+  getAllTables,
+  patchTableByTableId
+} = require('../controllers/tables.controllers');
 const {
   postOrderByTableId,
   patchOrderByTableId
@@ -7,6 +10,7 @@ const {
 const tablesRouter = require('express').Router();
 
 tablesRouter.route('/').get(getAllTables);
+tablesRouter.route('/:table_id').patch(patchTableByTableId);
 tablesRouter
   .route('/:table_id/orders')
   .post(postOrderByTableId)
