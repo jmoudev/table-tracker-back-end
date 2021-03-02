@@ -1,4 +1,5 @@
 const knex = require('../db/connection');
+const { handleRouteNotFound } = require('../controllers/errors.controllers');
 
 exports.fetchAllTables = status => {
   return knex('tables')
@@ -17,5 +18,12 @@ exports.updateTableByTableId = (table_id, status) => {
       if (status) query.update({ status });
     })
     .returning('*')
-    .then(([table]) => table);
+    .then(tableArr => {
+      if (!tableArr.length) {
+        return handleRouteNotFound();
+      } else {
+        const [table] = tableArr;
+        return table;
+      }
+    });
 };

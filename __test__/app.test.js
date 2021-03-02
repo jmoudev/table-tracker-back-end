@@ -298,6 +298,33 @@ describe('/api', () => {
               );
             });
         });
+        it('ERROR - status 404 - table_id not found', () => {
+          return request(app)
+            .patch('/api/tables/999')
+            .send({})
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Not Found');
+            });
+        });
+        it('ERROR - status 400 - bad request on table_id', () => {
+          return request(app)
+            .patch('/api/tables/not-an-id')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
+        it('ERROR - status 400 - bad request incorrect status in body', () => {
+          return request(app)
+            .patch('/api/tables/not-an-id')
+            .send({})
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual('Bad Request');
+            });
+        });
       });
     });
 
