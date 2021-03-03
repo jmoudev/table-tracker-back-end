@@ -1,7 +1,7 @@
 const connection = require('../db/connection');
 const {
   handleRouteNotFound,
-  handleBadRequest
+  handleBadRequest,
 } = require('../controllers/errors.controllers');
 const { selectFoodItems } = require('./food-items.models');
 
@@ -41,7 +41,7 @@ exports.updateOrderByTableId = async (
     mains_ready,
     desserts_ready,
     drinks_ready,
-    is_active
+    is_active,
   };
 
   for (status in orderStatus) {
@@ -72,7 +72,7 @@ const updateOrderStatus = async (order_id, orderStatus) => {
   return connection('orders').update(orderStatus).where({ order_id });
 };
 
-const fetchActiveOrderIdByTableId = async table_id => {
+const fetchActiveOrderIdByTableId = async (table_id) => {
   const [order] = await connection('orders')
     .select('*')
     .where({ table_id, is_active: true });
@@ -86,24 +86,24 @@ const fetchActiveOrderIdByTableId = async table_id => {
   }
 };
 
-const fetchOrderByOrderId = async order_id => {
+const fetchOrderByOrderId = async (order_id) => {
   const [order] = await connection('orders').select('*').where({ order_id });
 
   return order;
 };
 
-const fetchOrderFoodsByOrderId = async order_id => {
+const fetchOrderFoodsByOrderId = async (order_id) => {
   const juncRows = await connection('orders_food_junc')
     .select('*')
     .where({ order_id });
 
-  const foodIds = juncRows.map(row => row.food_item_id);
+  const foodIds = juncRows.map((row) => row.food_item_id);
 
   return foodIds;
 };
 
 const sendFoodItemsByOrderId = (order_id, foodsArr) => {
-  const juncPairsArr = foodsArr.map(food_item_id => {
+  const juncPairsArr = foodsArr.map((food_item_id) => {
     return { order_id, food_item_id };
   });
 
@@ -126,11 +126,11 @@ exports.fetchAllOrders = async (is_active = true) => {
 
   const foodInfo = await selectFoodItems();
 
-  return ordersWithoutFoods.map(order => {
+  return ordersWithoutFoods.map((order) => {
     const foodIds = ordersFoodsLookup[order.order_id];
 
-    const food_items = foodIds.map(id => {
-      const [filterFood] = foodInfo.filter(food => {
+    const food_items = foodIds.map((id) => {
+      const [filterFood] = foodInfo.filter((food) => {
         return food.food_item_id === id;
       });
       return filterFood;

@@ -4,7 +4,7 @@ const { handleRouteNotFound } = require('../controllers/errors.controllers');
 exports.fetchAllTables = status => {
   return knex('tables')
     .select('*')
-    .modify(query => {
+    .modify((query) => {
       if (status) {
         query.where({ status });
       }
